@@ -41,6 +41,10 @@ class Board:
                 for rs in (Board.row_squares)
                 for cs in (Board.col_squares)]
 
+    # TODO optional: if you wanted to make this more "Pythonic" this would be a good place to use the @property decorator
+    # which does the work cacheing computations for you
+    # https://docs.python.org/3/library/functions.html#property
+    # but honestly it's fine, just an FYI
     @staticmethod
     def all_units() -> List[List[str]]:
         if Board._all_units is None:
@@ -58,6 +62,8 @@ class Board:
 
         # re-arrange to dictionary of boxes and array of their units
         units = dict(
+            # TODO: all is a builtin keyword, usually not a problem here due to scoping but it's
+            # considered bad practice to shadow builtin functions
             (box, [unit for unit in all if box in unit]) for box in boxes)
         return units
 
@@ -118,6 +124,7 @@ class Board:
 
     @staticmethod
     def only_choice(board_dict: Dict[str, str]) -> Dict[str, str]:
+        # TODO: see note above, "all" is a builtin function, don't shadow it
         all = Board.all_units()
         for unit in all:
             for number in range(1, 10):
@@ -136,6 +143,10 @@ class Board:
     def sorted_box_possibilities(board_dict: Dict[str, str]) -> List[str]:
         options = [box for box in board_dict.keys()
                    if len(board_dict[box]) > 1]
+
+        # TODO: I might be wrong, but I don't think this does what you're
+        # expecting -- len(board_dict[box]) should always be the same,
+        # maybe you meant len(''.join(board_dict[box]) or something?
         return sorted(options, key=lambda box: len(board_dict[box]))
 
     @staticmethod
@@ -159,12 +170,16 @@ class Board:
 
             # If no values at all terminate and return None
             if solved_values_after == 0:
+                # TODO: this is going to mess up your type annotation
+                # maybe return empty dict or change type annotation?
                 return None
+
         return board_dict
 
     @staticmethod
     def validate(board_dict: Dict[str, str]) -> bool:
         valid = True
+        # TODO: shadowing built in keyword
         all = Board.all_units()
         complete_unit = set(Board.values)
         for unit in all:
@@ -185,6 +200,8 @@ class Board:
         # First, reduce the puzzle using the previous function
         reduced = Board.reduce_puzzle(board_dict)
         if reduced is None:
+            # TODO: messes up annotationgs... make return empty dict
+            # or change annotations
             return reduced
 
         if Board.num_solved_boxes(reduced) == Board.num_boxes():
@@ -206,6 +223,7 @@ class Board:
                 if result is not None:
                     return result
 
+        # TODO: see above note on annotations
         return None
 
     @staticmethod
