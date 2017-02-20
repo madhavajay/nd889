@@ -13,6 +13,7 @@ class Board:
     col_squares = ['123', '456', '789']
     _peers = None  # type: Dict[str, Set[str]]
     _all_units = None  # type: List[List[str]]
+    _units = None  # type: Dict[str, List[List[str]]]
 
     @staticmethod
     def cross(x: str, y: str) -> List[str]:
@@ -49,7 +50,7 @@ class Board:
         return Board._all_units
 
     @staticmethod
-    def generate_peers() -> Dict[str, Set[str]]:
+    def generate_units() -> Dict[str, List[List[str]]]:
         boxes = Board.boxes()
 
         # add all combinations of units together
@@ -58,9 +59,20 @@ class Board:
         # re-arrange to dictionary of boxes and array of their units
         units = dict(
             (box, [unit for unit in all if box in unit]) for box in boxes)
-        # flatten into a dictionary of boxes and arrays of their peer boxes
+        return units
+
+    @staticmethod
+    def units(box: str) -> List[List[str]]:
+        if Board._units is None:
+            Board._units = Board.generate_units()
+        return Board._units[box]
+
+    @staticmethod
+    def generate_peers() -> Dict[str, Set[str]]:
+        boxes = Board.boxes()
+
         peers = dict(
-            (box, set(sum(units[box], [])) - set([box])) for box in boxes)
+            (bx, set(sum(Board.units(bx), [])) - set([bx])) for bx in boxes)
 
         return peers
 
@@ -195,6 +207,31 @@ class Board:
                     return result
 
         return None
+
+    @staticmethod
+    def naked_twins(board_dict: Dict[str, str]) -> Dict[str, str]:
+        """
+        Where there are 2 identical unsolved boxes with 2 values
+        in a given unit, remove both values from all other boxes in their unit
+        """
+
+        # get all 2 value boxes
+        two_value_boxes = [box for box in board_dict.keys()
+                           if len(board_dict[box]) == 2]
+
+        for box in two_value_boxes:
+            options = board_dict[box]
+            for unit in Board.units(box):
+                naked_twins = [box for box in unit
+                               if board_dict[box] == options]
+                if len(naked_twins) == 2:
+                    for obox in [bx for bx in unit if bx not in naked_twins]:
+                        new_set = board_dict[obox]
+                        for option in options:
+                            new_set = new_set.replace(option, '')
+                        board_dict[obox] = new_set
+
+        return board_dict
 
     @staticmethod
     def display(values: Dict[str, str]) -> None:
