@@ -4,13 +4,13 @@
 
 from typing import Any, TYPE_CHECKING
 import pytest
-from board import Board as sb
+from board import Board as SB
 
 
 def test_cross() -> None:
     """cross returns expected combination of strings in array"""
     expected_array = ['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf']
-    cross_array = sb.cross('abc', 'def')
+    cross_array = SB.cross('abc', 'def')
     assert cross_array == expected_array
 
 
@@ -24,29 +24,30 @@ def test_boxes() -> None:
              'G1', 'G2', 'G3', 'G4', 'G5', 'G6', 'G7', 'G8', 'G9',
              'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'H7', 'H8', 'H9',
              'I1', 'I2', 'I3', 'I4', 'I5', 'I6', 'I7', 'I8', 'I9']
-    assert sb.boxes() == boxes
+    assert SB.boxes() == boxes
 
 
 def test_row_units() -> None:
     first_row = ['A1', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']
-    assert sb.row_units()[0] == first_row
+    assert SB.row_units()[0] == first_row
 
 
 def test_column_units() -> None:
     first_column = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1']
-    assert sb.column_units()[0] == first_column
+    assert SB.column_units()[0] == first_column
 
 
 def test_square_units() -> None:
     top_left_square = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3']
-    assert sb.square_units()[0] == top_left_square
+    assert SB.square_units()[0] == top_left_square
 
 
 def test_peers() -> None:
     peer = 'A1'
     a1_peers = ['A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9', 'B1', 'B2',
                 'B3', 'C1', 'C2', 'C3', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1']
-    assert sb.peers(peer) == set(a1_peers)
+    board = SB()
+    assert board.peers(peer) == set(a1_peers)
 
 
 def test_grid_values() -> None:
@@ -71,13 +72,13 @@ def test_grid_values() -> None:
         if value == '.':
             dict[key] = '123456789'
 
-    assert sb.grid_values(board_string) == dict
+    assert SB.grid_values(board_string) == dict
 
 
 def test_grid_values_fail() -> None:
     board_string = '..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82..'
     with pytest.raises(ValueError) as excinfo:
-        sb.grid_values(board_string)
+        SB.grid_values(board_string)
 
 
 def test_board_to_str() -> None:
@@ -87,8 +88,8 @@ def test_board_to_str() -> None:
     str_list = list(item.replace('.', '123456789') for item in str_list)
     expected_string = ','.join(str_list)
 
-    board = sb.grid_values(board_string)
-    string = sb.board_to_str(board)
+    board = SB.grid_values(board_string)
+    string = SB.board_to_str(board)
     assert string == expected_string
 
 
@@ -103,9 +104,9 @@ def test_eliminate() -> None:
                        '13459,6,7,3459,8,2,1345,345,134,1347,2,6,478,9,5,1478,'
                        '47,8,1467,47,2,457,3,17,1467,9,46,4679,5,4,1,47,3,'
                        '24678,2467')
-    board = sb.grid_values(board_string)
-    eliminated_board = sb.eliminate(board)
-    eliminated_string = sb.board_to_str(eliminated_board)
+    board = SB.grid_values(board_string)
+    eliminated_board = SB().eliminate(board)
+    eliminated_string = SB.board_to_str(eliminated_board)
 
     assert eliminated_string == expected_string
 
@@ -119,10 +120,11 @@ def test_only_choice() -> None:
                        '9,5,34569,4,1,13456,8,1345,13459,6,7,3459,8,2,1345,'
                        '345,134,1347,2,6,8,9,5,1478,47,8,1467,47,2,5,3,17,6,9,'
                        '6,9,5,4,1,7,3,8,2')
-    board = sb.grid_values(board_string)
-    eliminated_board = sb.eliminate(board)
+    board_dict = SB.grid_values(board_string)
+    sb = SB()
+    eliminated_board = sb.eliminate(board_dict)
     only_choice_board = sb.only_choice(eliminated_board)
-    only_choice_string = sb.board_to_str(only_choice_board)
+    only_choice_string = SB.board_to_str(only_choice_board)
     assert only_choice_string == expected_string
 
 
@@ -133,7 +135,8 @@ def test_reduce_puzzle() -> None:
                        '5,4,8,1,3,2,9,7,6,7,2,9,5,6,4,1,3,8,1,3,6,7,9,8,2,4,5,'
                        '3,7,2,6,8,9,5,1,4,8,1,4,2,5,3,7,6,9,6,9,5,4,1,7,3,8,2')
 
-    board = sb.grid_values(board_string)
+    board = SB.grid_values(board_string)
+    sb = SB()
     solution = sb.reduce_puzzle(board)
     solution_string = sb.board_to_str(solution)
     assert solution_string == expected_string
@@ -151,7 +154,8 @@ def test_reduce_puzzle_incomplete() -> None:
                        '6789,3,2,479,1,69,489,4689,1,6789,4,589,579,5789,'
                        '23569,23589,23689')
 
-    board = sb.grid_values(board_string)
+    board = SB.grid_values(board_string)
+    sb = SB()
     solution = sb.reduce_puzzle(board)
     solution_string = sb.board_to_str(solution)
     assert solution_string == expected_string
@@ -159,8 +163,9 @@ def test_reduce_puzzle_incomplete() -> None:
 
 def test_reduce_puzzle_fail() -> None:
     board_string = '.' * (9 * 9)
-    board = sb.grid_values(board_string)
+    board = SB.grid_values(board_string)
 
+    sb = SB()
     solution = sb.reduce_puzzle(board)
 
     assert solution is None
@@ -169,7 +174,8 @@ def test_reduce_puzzle_fail() -> None:
 def test_validate() -> None:
     board_string = ('..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82..'
                     '..26.95..8..2.3..9..5.1.3..')
-    board = sb.grid_values(board_string)
+    board = SB.grid_values(board_string)
+    sb = SB()
     solution = sb.reduce_puzzle(board)
     valid = sb.validate(solution)
 
@@ -179,7 +185,8 @@ def test_validate() -> None:
 def test_validate_fail() -> None:
     board_string = ('4.....8.5.3..........7......2.....6.....8.4......1.......'
                     '6.3.7.5..2.....1.4......')
-    board = sb.grid_values(board_string)
+    board = SB.grid_values(board_string)
+    sb = SB()
     solution = sb.reduce_puzzle(board)
     valid = sb.validate(solution)
 
@@ -196,10 +203,11 @@ def test_sorted_box_possibilities() -> None:
                      'D5', 'D7', 'D9', 'E2', 'E3', 'E6', 'E8', 'E9', 'F1',
                      'F3', 'F6', 'F7', 'F8', 'F9', 'G9', 'I7', 'I8', 'I9',
                      'B6', 'B9', 'C3', 'C5', 'C6', 'C9', 'B3']
-    board = sb.grid_values(board_string)
+    board = SB.grid_values(board_string)
+    sb = SB()
     reduced = sb.reduce_puzzle(board)
-    sb.display(reduced)
-    sorted_boxes = sb.sorted_box_possibilities(reduced)
+    SB.display(reduced)
+    sorted_boxes = SB.sorted_box_possibilities(reduced)
     assert sorted_boxes == expected_sort
 
 
@@ -209,10 +217,26 @@ def test_search() -> None:
     expected_string = ('4,1,7,3,6,9,8,2,5,6,3,2,1,5,8,9,4,7,9,5,8,7,2,4,3,1,6,'
                        '8,2,5,4,3,7,1,6,9,7,9,1,5,8,6,4,3,2,3,4,6,9,1,2,7,5,8,'
                        '2,8,9,6,4,3,5,7,1,5,7,3,2,9,1,6,8,4,1,6,4,8,7,5,2,9,3')
-    board = sb.grid_values(board_string)
+    board = SB.grid_values(board_string)
+    sb = SB()
     solution = sb.search(board)
-    solution_string = sb.board_to_str(solution)
+    SB.display(solution)
+    solution_string = SB.board_to_str(solution)
     assert solution_string == expected_string
+
+
+def test_diagonal_board() -> None:
+    sb = SB()
+    sb_diagonal = SB(diagonal_mode=True)
+    assert sb.all_units() != sb_diagonal.all_units()
+    assert sb.all_units() + SB.diagonal_units() == sb_diagonal.all_units()
+
+
+def test_diagonal_units() -> None:
+    units = [['A1', 'B2', 'C3', 'D4', 'E5', 'F6', 'G7', 'H8', 'I9'],
+             ['I1', 'H2', 'G3', 'F4', 'E5', 'D6', 'C7', 'B8', 'A9']]
+    diagonal_units = SB.diagonal_units()
+    assert diagonal_units == units
 
 
 def test_display_board(capsys: Any) -> None:
@@ -221,5 +245,5 @@ def test_display_board(capsys: Any) -> None:
     # display stdout for printing sudoku board
     with capsys.disabled():
         print('\n')
-        sb.display(sb.grid_values(board_string))
+        SB.display(SB.grid_values(board_string))
         print('\n')

@@ -5,15 +5,18 @@
 from typing import List, Dict, Set, TYPE_CHECKING
 
 
-class Board:
-    values = '123456789'
-    rows = 'ABCDEFGHI'
-    row_squares = ['ABC', 'DEF', 'GHI']
-    cols = '123456789'
-    col_squares = ['123', '456', '789']
-    _peers = None  # type: Dict[str, Set[str]]
-    _all_units = None  # type: List[List[str]]
-    _units = None  # type: Dict[str, List[List[str]]]
+class Board():
+    _values = '123456789'
+    _rows = 'ABCDEFGHI'
+    _row_squares = ['ABC', 'DEF', 'GHI']
+    _cols = '123456789'
+    _col_squares = ['123', '456', '789']
+
+    def __init__(self, diagonal_mode: bool = False) -> None:
+        self._diagonal_mode = diagonal_mode
+        self._peers = None  # type: Dict[str, Set[str]]
+        self._all_units = None  # type: List[List[str]]
+        self._units = None  # type: Dict[str, List[List[str]]]
 
     @staticmethod
     def cross(x: str, y: str) -> List[str]:
@@ -21,66 +24,70 @@ class Board:
 
     @staticmethod
     def boxes() -> List[str]:
-        return Board.cross(Board.rows, Board.cols)
+        return Board.cross(Board._rows, Board._cols)
 
     @staticmethod
     def num_boxes() -> int:
-        return len(Board.rows) * len(Board.cols)
+        return len(Board._rows) * len(Board._cols)
 
     @staticmethod
     def row_units() -> List[List[str]]:
-        return [Board.cross(r, Board.cols) for r in Board.rows]
+        return [Board.cross(r, Board._cols) for r in Board._rows]
 
     @staticmethod
     def column_units() -> List[List[str]]:
-        return [Board.cross(Board.rows, c) for c in Board.cols]
+        return [Board.cross(Board._rows, c) for c in Board._cols]
+
+    @staticmethod
+    def diagonal_units() -> List[List[str]]:
+        unit_1 = [Board._rows[int(vl) - 1] + vl for vl in Board._values]
+        unit_2 = [Board._rows[::-1][int(vl) - 1] + vl for vl in Board._values]
+
+        return [unit_1, unit_2]
 
     @staticmethod
     def square_units() -> List[List[str]]:
         return [Board.cross(rs, cs)
-                for rs in (Board.row_squares)
-                for cs in (Board.col_squares)]
+                for rs in (Board._row_squares)
+                for cs in (Board._col_squares)]
 
-    @staticmethod
-    def all_units() -> List[List[str]]:
-        if Board._all_units is None:
-            Board._all_units = (Board.row_units() +
-                                Board.column_units() +
-                                Board.square_units())
-        return Board._all_units
+    def all_units(self) -> List[List[str]]:
+        if self._all_units is None:
+            self._all_units = (Board.row_units() +
+                               Board.column_units() +
+                               Board.square_units())
+            if self._diagonal_mode:
+                self._all_units = self._all_units + Board.diagonal_units()
+        return self._all_units
 
-    @staticmethod
-    def generate_units() -> Dict[str, List[List[str]]]:
+    def generate_units(self) -> Dict[str, List[List[str]]]:
         boxes = Board.boxes()
 
         # add all combinations of units together
-        all = Board.all_units()
+        all = self.all_units()
 
         # re-arrange to dictionary of boxes and array of their units
         units = dict(
             (box, [unit for unit in all if box in unit]) for box in boxes)
         return units
 
-    @staticmethod
-    def units(box: str) -> List[List[str]]:
-        if Board._units is None:
-            Board._units = Board.generate_units()
-        return Board._units[box]
+    def units(self, box: str) -> List[List[str]]:
+        if self._units is None:
+            self._units = self.generate_units()
+        return self._units[box]
 
-    @staticmethod
-    def generate_peers() -> Dict[str, Set[str]]:
+    def generate_peers(self) -> Dict[str, Set[str]]:
         boxes = Board.boxes()
 
         peers = dict(
-            (bx, set(sum(Board.units(bx), [])) - set([bx])) for bx in boxes)
+            (bx, set(sum(self.units(bx), [])) - set([bx])) for bx in boxes)
 
         return peers
 
-    @staticmethod
-    def peers(box: str) -> Set[str]:
-        if Board._peers is None:
-            Board._peers = Board.generate_peers()
-        return Board._peers[box]
+    def peers(self, box: str) -> Set[str]:
+        if self._peers is None:
+            self._peers = self.generate_peers()
+        return self._peers[box]
 
     @staticmethod
     def grid_values(board_string: str) -> Dict[str, str]:
@@ -91,7 +98,7 @@ class Board:
         boxes = Board.boxes()
         for index, value in enumerate(board_string):
             if value == '.':
-                value = Board.values
+                value = Board._values
             board_dict[boxes[index]] = value
         return board_dict
 
@@ -106,19 +113,17 @@ class Board:
             string += board_dict[key] + ','
         return string[:-1]
 
-    @staticmethod
-    def eliminate(board_dict: Dict[str, str]) -> Dict[str, str]:
+    def eliminate(self, board_dict: Dict[str, str]) -> Dict[str, str]:
         solved_values = [box for box in board_dict.keys()
                          if len(board_dict[box]) == 1]
         for box in solved_values:
             digit = board_dict[box]
-            for peer in Board.peers(box):
+            for peer in self.peers(box):
                 board_dict[peer] = board_dict[peer].replace(digit, '')
         return board_dict
 
-    @staticmethod
-    def only_choice(board_dict: Dict[str, str]) -> Dict[str, str]:
-        all = Board.all_units()
+    def only_choice(self, board_dict: Dict[str, str]) -> Dict[str, str]:
+        all = self.all_units()
         for unit in all:
             for number in range(1, 10):
                 possible_boxes = [box for box in unit
@@ -138,18 +143,17 @@ class Board:
                    if len(board_dict[box]) > 1]
         return sorted(options, key=lambda box: len(board_dict[box]))
 
-    @staticmethod
-    def reduce_puzzle(board_dict: Dict[str, str]) -> Dict[str, str]:
+    def reduce_puzzle(self, board_dict: Dict[str, str]) -> Dict[str, str]:
         stalled = False
         while not stalled:
             # Check how many boxes have a determined value
             solved_values_before = Board.num_solved_boxes(board_dict)
 
             # Use the Eliminate Strategy
-            board_dict = Board.eliminate(board_dict)
+            board_dict = self.eliminate(board_dict)
 
             # Use the Only Choice Strategy
-            board_dict = Board.only_choice(board_dict)
+            board_dict = self.only_choice(board_dict)
 
             # Check how many boxes have a determined value, to compare
             solved_values_after = Board.num_solved_boxes(board_dict)
@@ -162,11 +166,10 @@ class Board:
                 return None
         return board_dict
 
-    @staticmethod
-    def validate(board_dict: Dict[str, str]) -> bool:
+    def validate(self, board_dict: Dict[str, str]) -> bool:
         valid = True
-        all = Board.all_units()
-        complete_unit = set(Board.values)
+        all = self.all_units()
+        complete_unit = set(Board._values)
         for unit in all:
             unit_values = [board_dict[box] for box in unit]
             unit_set = set(unit_values)
@@ -176,19 +179,18 @@ class Board:
                 break
         return valid
 
-    @staticmethod
-    def search(board_dict: Dict[str, str]) -> Dict[str, str]:
+    def search(self, board_dict: Dict[str, str]) -> Dict[str, str]:
         """
         Using depth-first search and propagation,
         create a search tree and solve the sudoku.
         """
         # First, reduce the puzzle using the previous function
-        reduced = Board.reduce_puzzle(board_dict)
+        reduced = self.reduce_puzzle(board_dict)
         if reduced is None:
             return reduced
 
         if Board.num_solved_boxes(reduced) == Board.num_boxes():
-            if Board.validate(reduced):
+            if self.validate(reduced):
                 return reduced
             else:
                 return None
@@ -202,14 +204,13 @@ class Board:
             for combination in choices:
                 board_copy = reduced.copy()
                 board_copy[smallest_box] = combination
-                result = Board.search(board_copy)
+                result = self.search(board_copy)
                 if result is not None:
                     return result
 
         return None
 
-    @staticmethod
-    def naked_twins(board_dict: Dict[str, str]) -> Dict[str, str]:
+    def naked_twins(self, board_dict: Dict[str, str]) -> Dict[str, str]:
         """
         Where there are 2 identical unsolved boxes with 2 values
         in a given unit, remove both values from all other boxes in their unit
@@ -221,7 +222,7 @@ class Board:
 
         for box in two_value_boxes:
             options = board_dict[box]
-            for unit in Board.units(box):
+            for unit in self.units(box):
                 naked_twins = [box for box in unit
                                if board_dict[box] == options]
                 if len(naked_twins) == 2:
@@ -237,11 +238,11 @@ class Board:
     def display(values: Dict[str, str]) -> None:
         width = 1 + max(len(values[s]) for s in Board.boxes())
         line = '+'.join(['-' * (width * 3)] * 3)
-        for r in Board.rows:
+        for r in Board._rows:
             print(''.join(
                 values[r + c].center(width) +
                 ('|' if c in '36' else '')
-                for c in Board.cols)
+                for c in Board._cols)
             )
             if r in 'CF':
                 print(line)

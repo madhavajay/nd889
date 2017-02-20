@@ -1,5 +1,5 @@
 from typing import Any, TYPE_CHECKING
-from board import Board as sb
+from board import Board as SB
 
 """
 Unit Test Solutions copied directly from solution_test.py and reformatted
@@ -102,12 +102,14 @@ possible_solutions_2 = [{
 
 
 def test_naked_twins_twins_1() -> None:
+    sb = SB()
     board = sb.naked_twins(before_naked_twins_1)
 
     assert board in possible_solutions_1
 
 
 def test_naked_twins_twins_2() -> None:
+    sb = SB()
     board = sb.naked_twins(before_naked_twins_2)
 
     assert board in possible_solutions_2
