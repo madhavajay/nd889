@@ -1,10 +1,12 @@
-from typing import Any, TYPE_CHECKING
+# -*- coding: utf-8 -*-
+# Author: github.com/madhavajay
+"""This is a test for diagonal functionality"""
+
 from board import Board as SB
 
-"""
-Unit Test Solutions copied directly from solution_test.py and reformatted
-"""
+# Unit Test Solutions copied directly from solution_test.py and reformatted
 
+# pylint: disable=invalid-name
 solved_diag_sudoku = {
     'G7': '8', 'G6': '9', 'G5': '7', 'G4': '3', 'G3': '2', 'G2': '4',
     'G1': '6', 'G9': '5', 'G8': '1', 'C9': '6', 'C8': '7', 'C3': '1',
@@ -24,6 +26,7 @@ solved_diag_sudoku = {
 
 
 def test_diagonal() -> None:
+    """Solve problem with diagonal constraint enabled"""
     diagonal_grid = ('2.............62....1....7...6..8...3...9...7...6..4...4'
                      '....8....52.............3')
     sb = SB(diagonal_mode=True)

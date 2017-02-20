@@ -1,9 +1,12 @@
-from typing import Any, TYPE_CHECKING
+# -*- coding: utf-8 -*-
+# Author: github.com/madhavajay
+"""This is a test for naked twins functionality"""
+
 from board import Board as SB
 
-"""
-Unit Test Solutions copied directly from solution_test.py and reformatted
-"""
+# Unit Test Solutions copied directly from solution_test.py and reformatted
+
+# pylint: disable=invalid-name
 before_naked_twins_1 = {
     'I6': '4', 'H9': '3', 'I2': '6', 'E8': '1', 'H3': '5', 'H7': '8',
     'I7': '1', 'I4': '8', 'H5': '6', 'F9': '7', 'G7': '6', 'G6': '3',
@@ -21,6 +24,7 @@ before_naked_twins_1 = {
     'B8': '3', 'B9': '4', 'D1': '5'
 }
 
+# pylint: disable=invalid-name
 possible_solutions_1 = [{
     'G7': '6', 'G6': '3', 'G5': '2', 'G4': '9', 'G3': '1', 'G2': '8',
     'G1': '7', 'G9': '5', 'G8': '4', 'C9': '1', 'C8': '5', 'C3': '8',
@@ -35,7 +39,8 @@ possible_solutions_1 = [{
     'E1': '8', 'E3': '79', 'E2': '37', 'H8': '2', 'H9': '3', 'H2': '9',
     'H3': '5', 'H1': '4', 'H6': '17', 'H7': '8', 'H4': '17', 'H5': '6',
     'D8': '8', 'D9': '6', 'D6': '279', 'D7': '34', 'D4': '237', 'D5': '347',
-    'D2': '1', 'D3': '79', 'D1': '5'}, {
+    'D2': '1', 'D3': '79', 'D1': '5'
+}, {
     'I6': '4', 'H9': '3', 'I2': '6', 'E8': '1', 'H3': '5', 'H7': '8',
     'I7': '1', 'I4': '8', 'H5': '6', 'F9': '7', 'G7': '6', 'G6': '3',
     'G5': '2', 'E1': '8', 'G3': '1', 'G2': '8', 'G1': '7', 'I1': '23',
@@ -52,6 +57,7 @@ possible_solutions_1 = [{
     'D5': '347', 'B8': '3', 'B9': '4', 'D1': '5'
 }]
 
+# pylint: disable=invalid-name
 before_naked_twins_2 = {
     'A1': '23', 'A2': '4', 'A3': '7', 'A4': '6', 'A5': '8', 'A6': '5',
     'A7': '23', 'A8': '9', 'A9': '1', 'B1': '6', 'B2': '9', 'B3': '8',
@@ -69,6 +75,7 @@ before_naked_twins_2 = {
     'I7': '1', 'I8': '4', 'I9': '8'
 }
 
+# pylint: disable=invalid-name
 possible_solutions_2 = [{
     'A1': '23', 'A2': '4', 'A3': '7', 'A4': '6', 'A5': '8', 'A6': '5',
     'A7': '23', 'A8': '9', 'A9': '1', 'B1': '6', 'B2': '9', 'B3': '8',
@@ -83,7 +90,8 @@ possible_solutions_2 = [{
     'G7': '9', 'G8': '27', 'G9': '27', 'H1': '7', 'H2': '2', 'H3': '4',
     'H4': '9', 'H5': '1', 'H6': '8', 'H7': '5', 'H8': '3', 'H9': '6',
     'I1': '9', 'I2': '3', 'I3': '5', 'I4': '7', 'I5': '2', 'I6': '6',
-    'I7': '1', 'I8': '4', 'I9': '8'}, {
+    'I7': '1', 'I8': '4', 'I9': '8'
+}, {
     'A1': '23', 'A2': '4', 'A3': '7', 'A4': '6', 'A5': '8', 'A6': '5',
     'A7': '23', 'A8': '9', 'A9': '1', 'B1': '6', 'B2': '9', 'B3': '8',
     'B4': '4', 'B5': '3', 'B6': '1', 'B7': '237', 'B8': '5', 'B9': '237',
@@ -102,6 +110,7 @@ possible_solutions_2 = [{
 
 
 def test_naked_twins_twins_1() -> None:
+    """Solve first naked twin problem"""
     sb = SB()
     board = sb.naked_twins(before_naked_twins_1)
 
@@ -109,6 +118,7 @@ def test_naked_twins_twins_1() -> None:
 
 
 def test_naked_twins_twins_2() -> None:
+    """Solve second naked twin problem"""
     sb = SB()
     board = sb.naked_twins(before_naked_twins_2)
 
