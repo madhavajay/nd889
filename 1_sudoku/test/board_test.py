@@ -1,10 +1,54 @@
 # -*- coding: utf-8 -*-
 # Author: github.com/madhavajay
 """This is a test for sudoku board"""
+import unittest
+from typing import Any
 
-from typing import Any, TYPE_CHECKING
 import pytest
+
 from board import Board as sb
+
+
+# TODO: for me personally your testing style is fine (and expedient)...
+# however, "professional" Python testing is (if done at all)
+# accomplished using the unittest module.  I'm going to code up a small example
+# the reason for this is the enhanced feedback so that a code reviewer can quickly
+# do a healthcheck and code coverage
+
+# TODO: migrate function tests to unittests
+class ExampleBoardTest(unittest.TestCase):
+
+    def test_cross(self) -> None:
+        """cross returns expected combination of strings in array"""
+        expected_array = ['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf']
+        cross_array = sb.cross('abc', 'def')
+        self.assertEqual(cross_array, expected_array)
+
+    def test_grid_values_fail(self) -> None:
+        board_string = '..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82..'
+        with self.assertRaises(ValueError) as excinfo:
+            sb.grid_values(board_string)
+
+    def test_sorted_box_possibilities(self) -> None:
+        board_string = ('4.....8.5.3..........7......2.....6.....8.4......1.......'
+                        '6.3.7.5..2.....1.4......')
+        expected_sort = ['G2', 'H7', 'A4', 'A6', 'E4', 'F4', 'G1', 'G3', 'G5',
+                         'H5', 'H8', 'I4', 'I5', 'A2', 'A5', 'A8', 'B8', 'C1',
+                         'D1', 'D4', 'D6', 'E1', 'G7', 'H2', 'H9', 'I2', 'I6',
+                         'A3', 'B1', 'B4', 'B5', 'B7', 'C2', 'C7', 'C8', 'D3',
+                         'D5', 'D7', 'D9', 'E2', 'E3', 'E6', 'E8', 'E9', 'F1',
+                         'F3', 'F6', 'F7', 'F8', 'F9', 'G9', 'I7', 'I8', 'I9',
+                         'B6', 'B9', 'C3', 'C5', 'C6', 'C9', 'B3']
+        board = sb.grid_values(board_string)
+        reduced = sb.reduce_puzzle(board)
+        sb.display(reduced)
+        sorted_boxes = sb.sorted_box_possibilities(reduced)
+        self.assertEqual(sorted_boxes, expected_sort)
+
+
+# JAY: this would normally go at bottom of file but included here for API demo purposes
+if __name__ == '__main__':
+    unittest.main()
 
 
 def test_cross() -> None:
@@ -52,6 +96,9 @@ def test_peers() -> None:
 def test_grid_values() -> None:
     board_string = ('..3.2.6..9..3.5..1..18.64....81.29..7.......8..67.82..'
                     '..26.95..8..2.3..9..5.1.3..')
+
+    # TODO: dict is a builtin... don't do that :P
+    # using "d" is acceptable (in my opinion) for a generic dictionary
     dict = {'A1': '.', 'A2': '.', 'A3': '3', 'A4': '.', 'A5': '2', 'A6': '.',
             'A7': '6', 'A8': '.', 'A9': '.', 'B1': '9', 'B2': '.', 'B3': '.',
             'B4': '3', 'B5': '.', 'B6': '5', 'B7': '.', 'B8': '.', 'B9': '1',
@@ -223,3 +270,4 @@ def test_display_board(capsys: Any) -> None:
         print('\n')
         sb.display(sb.grid_values(board_string))
         print('\n')
+
