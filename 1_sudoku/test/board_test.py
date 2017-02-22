@@ -273,6 +273,15 @@ def test_diagonal_units() -> None:
     assert diagonal_units == units
 
 
+def test_remove_values_in_boxes() -> None:
+    """Ensure removal of values from boxes"""
+    board_dict = {'A1': '123', 'A2': '123'}
+    expected_dict = {'A1': '3', 'A2': '123'}
+    # pylint: disable=protected-access
+    board = SB._remove_values_in_boxes(board_dict, set('1') | set('2'), ['A1'])
+    assert board == expected_dict
+
+
 def test_display_board(capsys: Any) -> None:
     """Ensure display method prints ascii board correctly"""
     board_string = ('483921657967345821251876493548132976729564138136798245'

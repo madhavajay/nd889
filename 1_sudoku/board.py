@@ -250,12 +250,61 @@ class Board():
                 naked_twins = [box for box in unit
                                if board_dict[box] == options]
                 if len(naked_twins) == 2:
-                    for obox in [bx for bx in unit if bx not in naked_twins]:
-                        new_set = board_dict[obox]
-                        for option in options:
-                            new_set = new_set.replace(option, '')
-                        board_dict[obox] = new_set
+                    boxes = [bx for bx in unit if bx not in naked_twins]
+                    values = set(list(options))
+                    board_dict = Board._remove_values_in_boxes(board_dict,
+                                                               values, boxes)
 
+        return board_dict
+
+    def naked_multi(self, board_dict: Dict[str, str],
+                    size: int) -> Dict[str, str]:
+        """
+        Search for groups of twins, triplets, quads in a more generalized way
+        and remove values from all other boxes in that unit
+
+        A set can be defined as two or more boxes in which at least one box
+        has as many possible values in it as the size of the group which we
+        can call a leader and each other member has the same set or subset
+        of those values where the subset is greater than 1 (solved)
+
+        In this case it can be assumed that these units are dependant and
+        therefore the other units can have this super set of values removed
+        """
+
+        # candidate leader boxes
+        size_value_boxes = [box for box in board_dict.keys()
+                            if len(board_dict[box]) == size]
+
+        # go through each candidate leader
+        for leader_box in size_value_boxes:
+            # the options for the box
+            options = set(list(board_dict[leader_box]))
+            # go through all units that potential leader is in
+            for unit in self.units(leader_box):
+                subsets = []
+                for box in [box for box in unit
+                            if box != leader_box]:
+                    subset = set(list(board_dict[box]))
+                    if len(subset) > 1 and subset.issubset(options):
+                        subsets.append(subset)
+                if len(subsets) == size - 1:
+                    board_dict = Board._remove_values_in_boxes(board_dict,
+                                                               options, unit)
+
+        return board_dict
+
+    @staticmethod
+    def _remove_values_in_boxes(board_dict: Dict[str, str], values: Set[str],
+                                boxes: List[str]) -> Dict[str, str]:
+        for box in boxes:
+            new_set = board_dict[box]
+            if not set(list(new_set)).issubset(values):
+                for value in values:
+                    if len(new_set) > 1:
+                        new_set = new_set.replace(value, '')
+                if board_dict[box] != new_set:
+                    board_dict[box] = new_set
         return board_dict
 
     @staticmethod
