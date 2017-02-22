@@ -1,5 +1,10 @@
-# nd889
+# Artificial Intelligence Nanodegree - nd889
+
 Udacity Artificial Intelligence Nanodegree
+
+# Projects
+
+1. [Solve a Sudoku with AI](1_sudoku/README.md)
 
 ## Setup
 This code uses the following:
@@ -14,9 +19,24 @@ Install pipenv:
 $ pip install pipenv
 ```
 
+Change to project directory:
+```bash
+$ cd nd889
+```
+
 Initialize pipenv in python3 mode:
 ```bash
 $ pipenv --three
+```
+
+Start pipenv shell
+```bash
+$ pipenv shell -c
+```
+
+Install project dependancies:
+```bash
+$ pipenv install
 ```
 
 Run tests:

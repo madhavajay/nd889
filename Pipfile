@@ -6,4 +6,3 @@ verify_ssl = true
 mypy-lang = "*"
 pytest = "*"
 pylint = "*"
-pygame = "*"
