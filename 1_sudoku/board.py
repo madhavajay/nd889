@@ -199,7 +199,6 @@ class Board():
             unit_values = [board_dict[box] for box in unit]
             unit_set = set(unit_values)
             if unit_set != complete_unit:
-                print('bad set {}'.format(unit_set))
                 valid = False
                 break
         return valid

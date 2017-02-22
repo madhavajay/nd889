@@ -109,7 +109,7 @@ possible_solutions_2 = [{
 }]
 
 
-def test_naked_twins_twins_1() -> None:
+def test_naked_twins_1() -> None:
     """Solve first naked twin problem"""
     sb = SB()
     board = sb.naked_twins(before_naked_twins_1)
@@ -117,7 +117,7 @@ def test_naked_twins_twins_1() -> None:
     assert board in possible_solutions_1
 
 
-def test_naked_twins_twins_2() -> None:
+def test_naked_twins_2() -> None:
     """Solve second naked twin problem"""
     sb = SB()
     board = sb.naked_twins(before_naked_twins_2)
