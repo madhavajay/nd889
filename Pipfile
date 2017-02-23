@@ -3,6 +3,6 @@ url = "https://pypi.python.org/simple"
 verify_ssl = true
 
 [packages]
-mypy-lang = "*"
+mypy = "*"
 pytest = "*"
 pylint = "*"
