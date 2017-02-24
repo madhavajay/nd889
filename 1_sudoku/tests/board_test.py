@@ -4,7 +4,7 @@
 
 from typing import Any
 import pytest
-from board import Board as SB
+from sudoku.board import Board as SB
 
 
 def test_cross() -> None:

@@ -2,7 +2,7 @@
 # Author: github.com/madhavajay
 """This is a test for naked multi functionality"""
 
-from board import Board as SB
+from sudoku.board import Board as SB
 
 # pylint: disable=invalid-name
 naked_multi_board_1 = {
