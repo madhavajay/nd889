@@ -2,7 +2,7 @@
 # Author: github.com/madhavajay
 """This is a test for naked twins functionality"""
 
-from board import Board as SB
+from sudoku.board import Board as SB
 
 # Unit Test Solutions copied directly from solution_test.py and reformatted
 

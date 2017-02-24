@@ -2,7 +2,7 @@
 # Author: github.com/madhavajay
 """This is a test for diagonal functionality"""
 
-from board import Board as SB
+from sudoku.board import Board as SB
 
 # Unit Test Solutions copied directly from solution_test.py and reformatted
 
@@ -29,9 +29,9 @@ def test_diagonal() -> None:
     """Solve problem with diagonal constraint enabled"""
     diagonal_grid = ('2.............62....1....7...6..8...3...9...7...6..4...4'
                      '....8....52.............3')
-    sb = SB(diagonal_mode=True)
-    board = sb.grid_values(diagonal_grid)
+    sbrd = SB(diagonal_mode=True)
+    board = sbrd.grid_values(diagonal_grid)
 
-    result = sb.search(board)
+    result = sbrd.search(board)
 
     assert result == solved_diag_sudoku
