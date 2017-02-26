@@ -4,6 +4,12 @@
 
 from typing import List, Dict, Set
 
+# type alias for the board state
+BoardState = Dict[str, str]
+
+# type alias for unit
+Unit = List[str]
+
 
 class Board():
     """
@@ -18,8 +24,8 @@ class Board():
     def __init__(self, diagonal_mode: bool=False) -> None:
         self._diagonal_mode = diagonal_mode
         self._peers = None  # type: Dict[str, Set[str]]
-        self._all_units = None  # type: List[List[str]]
-        self._units = None  # type: Dict[str, List[List[str]]]
+        self._all_units = None  # type: List[Unit]
+        self._units = None  # type: Dict[str, List[Unit]]
 
     @staticmethod
     def cross(x_axis: str, y_axis: str) -> List[str]:
@@ -37,17 +43,17 @@ class Board():
         return len(Board._rows) * len(Board._cols)
 
     @staticmethod
-    def _row_units() -> List[List[str]]:
+    def _row_units() -> List[Unit]:
         """Generate all row units for the board"""
         return [Board.cross(r, Board._cols) for r in Board._rows]
 
     @staticmethod
-    def _column_units() -> List[List[str]]:
+    def _column_units() -> List[Unit]:
         """Generate all column units for the board"""
         return [Board.cross(Board._rows, c) for c in Board._cols]
 
     @staticmethod
-    def _diagonal_units() -> List[List[str]]:
+    def _diagonal_units() -> List[Unit]:
         """Generate both diagonal units for the board"""
         unit_1 = [Board._rows[int(vl) - 1] + vl for vl in Board._values]
         unit_2 = [Board._rows[::-1][int(vl) - 1] + vl for vl in Board._values]
@@ -55,13 +61,13 @@ class Board():
         return [unit_1, unit_2]
 
     @staticmethod
-    def _square_units() -> List[List[str]]:
+    def _square_units() -> List[Unit]:
         """Generate all quadrant units for the board"""
         return [Board.cross(rs, cs)
                 for rs in Board._row_squares
                 for cs in Board._col_squares]
 
-    def all_units(self) -> List[List[str]]:
+    def all_units(self) -> List[Unit]:
         """
         Combine all units together into an list of units, supports additional
         diagonal units if self._diagonal_mode is True
@@ -74,7 +80,7 @@ class Board():
                 self._all_units = self._all_units + Board._diagonal_units()
         return self._all_units
 
-    def generate_units(self) -> Dict[str, List[List[str]]]:
+    def generate_units(self) -> Dict[str, List[Unit]]:
         """Generate all units once and cache them"""
         boxes = Board.boxes()
 
@@ -86,7 +92,7 @@ class Board():
             (box, [unit for unit in all_u if box in unit]) for box in boxes)
         return units
 
-    def units(self, box: str) -> List[List[str]]:
+    def units(self, box: str) -> List[Unit]:
         """Fetch units and generate if they don't exist yet"""
         if self._units is None:
             self._units = self.generate_units()
@@ -108,7 +114,7 @@ class Board():
         return self._peers[box]
 
     @staticmethod
-    def grid_values(board_string: str) -> Dict[str, str]:
+    def grid_values(board_string: str) -> BoardState:
         """Convert unsolved board string into a board state dictionary"""
         if len(board_string) != Board.num_boxes():
             raise ValueError('Board string length must be 81 characters')
@@ -122,7 +128,7 @@ class Board():
         return board_dict
 
     @staticmethod
-    def board_to_str(board_dict: Dict[str, str]) -> str:
+    def board_to_str(board_dict: BoardState) -> str:
         """
         Convert a board dictionary into a comma separated string of values
         in order of the original boxes array for easy comparison during tests
@@ -132,7 +138,7 @@ class Board():
             string += board_dict[key] + ','
         return string[:-1]
 
-    def eliminate(self, board_dict: Dict[str, str]) -> Dict[str, str]:
+    def eliminate(self, board_dict: BoardState) -> BoardState:
         """Apply the eliminate strategy on the supplied board and return it"""
         solved_values = [box for box in board_dict.keys()
                          if len(board_dict[box]) == 1]
@@ -142,7 +148,7 @@ class Board():
                 board_dict[peer] = board_dict[peer].replace(digit, '')
         return board_dict
 
-    def only_choice(self, board_dict: Dict[str, str]) -> Dict[str, str]:
+    def only_choice(self, board_dict: BoardState) -> BoardState:
         """Apply only choice strategy on the supplied board and return it"""
         all_units = self.all_units()
         for unit in all_units:
@@ -154,19 +160,19 @@ class Board():
         return board_dict
 
     @staticmethod
-    def num_solved_boxes(board_dict: Dict[str, str]) -> int:
+    def num_solved_boxes(board_dict: BoardState) -> int:
         """Calculate number of solved boxes on the board"""
         return len([box for box in board_dict.keys()
                     if len(board_dict[box]) == 1])
 
     @staticmethod
-    def sorted_box_possibilities(board_dict: Dict[str, str]) -> List[str]:
+    def sorted_box_possibilities(board_dict: BoardState) -> List[str]:
         """Return unsolved boxes ordered by lowest combinations first"""
         options = [box for box in board_dict.keys()
                    if len(board_dict[box]) > 1]
         return sorted(options, key=lambda box: len(board_dict[box]))
 
-    def reduce_puzzle(self, board_dict: Dict[str, str]) -> Dict[str, str]:
+    def reduce_puzzle(self, board_dict: BoardState) -> BoardState:
         """Recursively apply eliminate and only choice until no change"""
         stalled = False
         while not stalled:
@@ -190,7 +196,7 @@ class Board():
                 return None
         return board_dict
 
-    def validate(self, board_dict: Dict[str, str]) -> bool:
+    def validate(self, board_dict: BoardState) -> bool:
         """Check every unit on the board contains the set 1-9"""
         valid = True
         all_units = self.all_units()
@@ -203,7 +209,7 @@ class Board():
                 break
         return valid
 
-    def search(self, board_dict: Dict[str, str]) -> Dict[str, str]:
+    def search(self, board_dict: BoardState) -> BoardState:
         """
         Using depth-first search recursively reduce the board state
         until the first leaf is solved or there are no solutions
@@ -234,7 +240,7 @@ class Board():
 
         return None
 
-    def naked_twins(self, board_dict: Dict[str, str]) -> Dict[str, str]:
+    def naked_twins(self, board_dict: BoardState) -> BoardState:
         """
         Search for pairs of unsolved boxes with 2 matching values in each unit
         and remove both values from all other boxes in that unit
@@ -257,8 +263,8 @@ class Board():
 
         return board_dict
 
-    def naked_multi(self, board_dict: Dict[str, str],
-                    size: int) -> Dict[str, str]:
+    def naked_multi(self, board_dict: BoardState,
+                    size: int) -> BoardState:
         """
         Search for groups of twins, triplets, quads in a more generalized way
         and remove values from all other boxes in that unit
@@ -295,8 +301,8 @@ class Board():
         return board_dict
 
     @staticmethod
-    def _remove_values_in_boxes(board_dict: Dict[str, str], values: Set[str],
-                                boxes: List[str]) -> Dict[str, str]:
+    def _remove_values_in_boxes(board_dict: BoardState, values: Set[str],
+                                boxes: List[str]) -> BoardState:
         for box in boxes:
             new_set = board_dict[box]
             if not set(list(new_set)).issubset(values):
@@ -308,7 +314,7 @@ class Board():
         return board_dict
 
     @staticmethod
-    def display(values: Dict[str, str]) -> None:
+    def display(values: BoardState) -> None:
         """Print ascii board representation of board dictionary"""
         width = 1 + max(len(values[s]) for s in Board.boxes())
         line = '+'.join(['-' * (width * 3)] * 3)
