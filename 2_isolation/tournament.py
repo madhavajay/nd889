@@ -57,7 +57,7 @@ same opponents.
 Agent = namedtuple("Agent", ["player", "name"])
 
 
-def play_match(player1, player2):
+def play_match(player1, player2, showBoard=False, time=TIME_LIMIT):
     """
     Play a "fair" set of matches between two agents by playing two games
     between the players, forcing each agent to play from randomly selected
@@ -77,7 +77,7 @@ def play_match(player1, player2):
 
     # play both games and tally the results
     for game in games:
-        winner, _, termination = game.play(time_limit=TIME_LIMIT)
+        winner, _, termination = game.play(time_limit=time, show=showBoard)
 
         if player1 == winner:
             num_wins[player1] += 1
@@ -176,6 +176,12 @@ def main():
         print("\n\nResults:")
         print("----------")
         print("{!s:<15}{:>10.2f}%".format(agentUT.name, win_ratio))
+
+        if agentUT.name == 'ID_Improved' or agentUT.name == 'Student':
+            searches = len(agentUT.player.average_depths)
+            total_depth = sum(agentUT.player.average_depths)
+            avg = total_depth / searches
+            print('{} Avg Depth: {}'.format(agentUT.name, avg))
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ import timeit
 
 from copy import deepcopy
 from copy import copy
+from termcolor import colored
 
 
 TIME_LIMIT_MILLIS = 200
@@ -274,32 +275,44 @@ class Board(object):
         the location of each player and indicating which cells have been
         blocked, and which remain open.
         """
+        DIRECTIONS = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
+                      (1, -2),  (1, 2), (2, -1),  (2, 1)]
 
         p1_loc = self.__last_player_move__[self.__player_1__]
         p2_loc = self.__last_player_move__[self.__player_2__]
-
-        out = ''
+        p1_range = [(p1_loc[0] + pos[0], p1_loc[1] + pos[1]) for pos in DIRECTIONS]
+        p2_range = [(p2_loc[0] + pos[0], p2_loc[1] + pos[1]) for pos in DIRECTIONS]
+        p1_color = 'green'
+        p2_color = 'red'
+        out = '     0   1   2   3   4   5   6'  + '\n\r'
 
         for i in range(self.height):
-            out += ' | '
+            out += '{}  | '.format(i)
 
             for j in range(self.width):
 
                 if not self.__board_state__[i][j]:
-                    out += ' '
+                    if (i, j) in p1_range and (i, j) in p2_range:
+                        out += str(colored(' ', 'white', 'on_blue'))
+                    else:
+                        if (i, j) in p2_range:
+                            out += str(colored(' ', 'white', 'on_{}'.format(p2_color)))
+                        elif (i, j) in p1_range:
+                            out += str(colored(' ', 'white', 'on_{}'.format(p1_color)))
+                        else:
+                            out += ' '
                 elif p1_loc and i == p1_loc[0] and j == p1_loc[1]:
-                    out += '1'
+                    out += str(colored('1', p1_color))
                 elif p2_loc and i == p2_loc[0] and j == p2_loc[1]:
-                    out += '2'
+                    out += str(colored('2', p2_color))
                 else:
                     out += '-'
-
                 out += ' | '
             out += '\n\r'
 
         return out
 
-    def play(self, time_limit=TIME_LIMIT_MILLIS):
+    def play(self, time_limit=TIME_LIMIT_MILLIS, show=False):
         """
         Execute a match between the players by alternately soliciting them
         to select a move and applying it in the game.
@@ -326,6 +339,9 @@ class Board(object):
             legal_player_moves = self.get_legal_moves()
 
             game_copy = self.copy()
+
+            if show is True:
+                print("\nNew state:\n{}".format(self.to_string()))
 
             move_start = curr_time_millis()
             time_left = lambda : time_limit - (curr_time_millis() - move_start)
