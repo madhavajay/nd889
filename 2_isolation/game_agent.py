@@ -197,6 +197,8 @@ class CustomPlayer:
         best_move = legal_moves[random.randint(0, len(legal_moves) - 1)]
         best_score = float('-inf')
 
+        max_depth = game.width * game.height - game.move_count
+
         try:
             # The search method call (alpha beta or minimax) should happen in
             # here in order to avoid timeout. The try/except block will
@@ -207,23 +209,18 @@ class CustomPlayer:
             elif self.method is 'alphabeta':
                 search = self.alphabeta
 
-            depth = self.search_depth
             if self.iterative:
-                depth = 1
-
-            while True:
-                score, move = search(game, depth)
-
-                if (score, move) > (best_score, best_move):
-                    best_score, best_move = score, move
-
-                if depth == self.search_depth:
-                    break
-                else:
-                    depth = depth + 1
+                current_depth = 1
+                while current_depth <= max_depth:
+                    score, move = search(game, current_depth)
+                    if (score, move) > (best_score, best_move):
+                        best_score, best_move = score, move
+                    current_depth = current_depth + 1
+            else:
+                best_score, best_move = search(game, self.search_depth)
         except Timeout:
             # Handle any actions required at timeout, if necessary
-            pass
+            return best_move
 
         return best_move
 
