@@ -2,9 +2,13 @@
 # Author: github.com/madhavajay
 """nd889 AIND Project 2 - Isolation"""
 
+import random
+import copy
+from functools import reduce
 from typing import Any, Callable, Tuple, List
 
 from isolation import Board
+from sample_players import improved_score
 
 # player has no real type so we will use Any
 Player = Any
@@ -40,16 +44,69 @@ def custom_score(game: Board, player: Player) -> float:
     float
         The heuristic value of the current game state to the specified player.
     """
+    return improved_score(game, player)
 
+
+EMPTY_BOARD = [[0 for x in range(7)] for y in range(7)]
+SCORING_VALUES = [0, 5, 4, 3, 2, 1]
+DIMENSIONS = {0, 1, 2, 3, 4, 5, 6}
+DIRECTIONS = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
+              (1, -2), (1, 2), (2, -1), (2, 1)]
+
+
+def plane_walker(game: Board, player: Player) -> float:
     if game.is_loser(player):
         return float("-inf")
 
     if game.is_winner(player):
         return float("inf")
 
-    own_moves = len(game.get_legal_moves(player))
-    opp_moves = len(game.get_legal_moves(game.get_opponent(player)))
-    return float(own_moves - opp_moves)
+    blanks = game.get_blank_spaces()
+
+    moves = game.get_legal_moves(player)
+    distance_map = build_map(moves, blanks)
+    board_value = score_board_distance(distance_map)
+
+    opp_moves = game.get_legal_moves(game.get_opponent(player))
+    opp_distance_map = build_map(opp_moves, blanks)
+    opp_board_value = score_board_distance(opp_distance_map)
+
+    return float(board_value - opp_board_value)
+
+
+def build_map(moves, blanks):
+    depth = 1
+    board = copy.deepcopy(EMPTY_BOARD)
+    start_moves = set(moves)
+    while len(start_moves) > 0:
+        new_moves = set()
+        for move in start_moves:
+            if move in blanks and board[move[0]][move[1]] == 0:
+                board[move[0]][move[1]] = depth
+                new_possibles = set([(move[0] + direction[0],
+                                      move[1] + direction[1])
+                                     for direction in DIRECTIONS])
+                new_moves = new_moves | new_possibles
+        start_moves = possible_moves(new_moves)
+        depth = depth + 1
+    return board
+
+
+def possible_moves(moves):
+    valid_moves = []
+    for move in moves:
+        if move[0] in DIMENSIONS and move[1] in DIMENSIONS:
+            valid_moves.append(move)
+    return valid_moves
+
+
+def score_board_distance(distance_map):
+    distances = reduce(lambda x, y: x + y, distance_map)
+    value = 0
+    for distance in distances:
+        if distance < len(SCORING_VALUES):
+            value = value + SCORING_VALUES[distance]
+    return value
 
 
 class CustomPlayer:
@@ -134,24 +191,32 @@ class CustomPlayer:
         # Perform any required initializations, including selecting an initial
         # move from the game board (i.e., an opening book), or returning
         # immediately if there are no legal moves
-        if len(legal_moves) == 0:
+        if not legal_moves:
             return (-1, -1)
 
-        best_move = legal_moves[0]
+        best_move = legal_moves[random.randint(0, len(legal_moves) - 1)]
+        best_score = float('-inf')
+
         try:
             # The search method call (alpha beta or minimax) should happen in
             # here in order to avoid timeout. The try/except block will
             # automatically catch the exception raised by the search method
             # when the timer gets close to expiring
+            if self.method is 'minimax':
+                search = self.minimax
+            elif self.method is 'alphabeta':
+                search = self.alphabeta
+
             depth = self.search_depth
             if self.iterative:
                 depth = 1
 
-            while depth > 0:
-                if self.method == 'minimax':
-                    _, best_move = self.minimax(game, depth)
-                elif self.method == 'alphabeta':
-                    _, best_move = self.alphabeta(game, depth)
+            while True:
+                score, move = search(game, depth)
+
+                if (score, move) > (best_score, best_move):
+                    best_score, best_move = score, move
+
                 if depth == self.search_depth:
                     break
                 else:
@@ -198,32 +263,20 @@ class CustomPlayer:
         if self.time_left() < self.timer_threshold:
             raise Timeout()
 
-        legal_moves = game.get_legal_moves()
+        best_move = (-1, -1)
+        best_score = float("-inf") if maximizing_player else float("inf")
+        comparison = max if maximizing_player else min
 
-        if depth == 0 or len(legal_moves) == 0:
-            # at level 1 maximizing_player
-            # at level 2 opponent
-            if maximizing_player:
-                player = game.active_player
-            else:
-                player = game.get_opponent(game.active_player)
-            utility = self.score(game, player)
-            return utility, (-1, -1)
+        if depth is 0:
+            return self.score(game, self), best_move
 
-        searches = []
-        for move in legal_moves:
-            future_game = game.forecast_move(move)
-            val, _ = self.minimax(future_game, depth-1, not maximizing_player)
-            searches.append((val, move))
+        for move in game.get_legal_moves():
+            score, _ = self.minimax(
+                game.forecast_move(move), depth - 1, not maximizing_player)
+            best_score, best_move = comparison(
+                (best_score, best_move), (score, move))
 
-        best = searches[0]
-        for search in searches:
-            if maximizing_player and search[0] > best[0]:
-                best = search
-            elif not maximizing_player and search[0] < best[0]:
-                best = search
-
-        return best
+        return best_score, best_move
 
     def alphabeta(self, game: Board, depth: int,
                   alpha: float=float("-inf"), beta: float=float("inf"),
@@ -268,37 +321,26 @@ class CustomPlayer:
         if self.time_left() < self.timer_threshold:
             raise Timeout()
 
-        legal_moves = game.get_legal_moves()
+        best_move = (-1, -1)
+        best_score = alpha if maximizing_player else beta
+        if depth is 0:
+            return self.score(game, self), best_move
 
-        if depth == 0 or len(legal_moves) == 0:
-            if maximizing_player:
-                player = game.active_player
-            else:
-                player = game.get_opponent(game.active_player)
-
-            utility = self.score(game, player)
-            return utility, (-1, -1)
-
-        if maximizing_player:
-            best = (float("-inf"), (-1, -1))
-        else:
-            best = (float("inf"), (-1, -1))
-
-        for move in legal_moves:
+        for move in game.get_legal_moves():
             future_game = game.forecast_move(move)
-            child = self.alphabeta(future_game, depth-1,
-                                   alpha, beta, not maximizing_player)
+            score, _ = self.alphabeta(future_game, depth - 1,
+                                      alpha, beta, not maximizing_player)
             if maximizing_player:
-                if child[0] > best[0]:
-                    best = child[0], move
-                if best[0] >= beta:
-                    return best
-                alpha = max(alpha, best[0])
+                if score > best_score:
+                    best_score, best_move = score, move
+                if best_score >= beta:
+                    return best_score, best_move
+                alpha = max(alpha, best_score)
             else:
-                if child[0] < best[0]:
-                    best = child[0], move
-                if best[0] <= alpha:
-                    return best
-                beta = min(beta, best[0])
+                if score < best_score:
+                    best_score, best_move = score, move
+                if best_score <= alpha:
+                    return best_score, best_move
+                beta = min(beta, best_score)
 
-        return best
+        return best_score, best_move
