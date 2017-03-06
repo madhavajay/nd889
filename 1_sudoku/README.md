@@ -1,4 +1,4 @@
-# Artificial Intelligence Nanodegree - nd889
+# Udacity - Artificial Intelligence Nanodegree - nd889
 
 ## Solve a Sudoku with AI
 As discussed in Chapter 6 of Artificial Intelligence: A Modern Approach, constraint satisfaction problems can be described using three components, Variables X, Domains D and Constraints C.

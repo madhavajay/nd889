@@ -1,13 +1,21 @@
+# -*- coding: utf-8 -*-
+# Author: github.com/madhavajay
+"""nd889 AIND Project 2 - Build a Game-Playing Agent"""
+
 from sample_players import HumanPlayer
 from tournament import *
 from game_agent import *
 
+MAX_TIME = 100000000
 
-def main():
+
+def main() -> None:
     AB_ARGS = {"search_depth": 5, "method": 'alphabeta', "iterative": False}
+    my_ai = CustomPlayer(score_fn=custom_score, **AB_ARGS)
+    # agent_1 = Agent(my_ai, "Student")
     agent_1 = Agent(HumanPlayer(), "Human")
-    #agent_1 = Agent(CustomPlayer(score_fn=custom_score, **AB_ARGS), "Human")
-    agent_2 = Agent(CustomPlayer(score_fn=improved_score, **AB_ARGS), "AB_Custom")
+    id_improved = CustomPlayer(score_fn=improved_score, **AB_ARGS)
+    agent_2 = Agent(id_improved, "AB_Custom")
     agent_1_wins = 0.
     agent_2_wins = 0.
     total = 0.
@@ -22,7 +30,8 @@ def main():
 
     # Each player takes a turn going first
     for _ in range(num_matches):
-        score_1, score_2 = play_match(agent_1.player, agent_2.player, True, 100000000)
+        score_1, score_2 = play_match(agent_1.player, agent_2.player,
+                                      True, MAX_TIME)
         counts[agent_1.player] += score_1
         counts[agent_2.player] += score_2
         total += score_1 + score_2

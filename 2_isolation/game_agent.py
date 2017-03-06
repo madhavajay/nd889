@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 # Author: github.com/madhavajay
-"""nd889 AIND Project 2 - Isolation"""
+"""nd889 AIND Project 2 - Build a Game-Playing Agent"""
 
 import random
 import copy
 from functools import reduce
-from typing import Any, Callable, Tuple, List
+from typing import Any, Set, Callable, Tuple, List
 
 from isolation import Board
-from sample_players import improved_score
 
 # player has no real type so we will use Any
 Player = Any
@@ -44,7 +43,13 @@ def custom_score(game: Board, player: Player) -> float:
     float
         The heuristic value of the current game state to the specified player.
     """
-    return improved_score(game, player)
+    if game.is_loser(player):
+        return float("-inf")
+
+    if game.is_winner(player):
+        return float("inf")
+
+    return plane_walker(game, player)
 
 
 EMPTY_BOARD = [[0 for x in range(7)] for y in range(7)]
@@ -52,15 +57,26 @@ SCORING_VALUES = [0, 5, 4, 3, 2, 1]
 DIMENSIONS = {0, 1, 2, 3, 4, 5, 6}
 DIRECTIONS = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
               (1, -2), (1, 2), (2, -1), (2, 1)]
+CLOVER = [(-1, -1), (-1, 1), (1, 1), (1, -1)]
+
+
+def ensemble(game: Board, player: Player) -> float:
+    plane_walker_score = plane_walker(game, player)
+    build_wall_score = build_wall(game, player)
+    rush_middle_score = rush_middle(game, player)
+    block_move_score = block_move(game, player)
+    clover_leaf_score = clover_leaf(game, player)
+
+    return (
+        plane_walker_score +
+        build_wall_score +
+        rush_middle_score +
+        block_move_score +
+        clover_leaf_score
+    )
 
 
 def plane_walker(game: Board, player: Player) -> float:
-    if game.is_loser(player):
-        return float("-inf")
-
-    if game.is_winner(player):
-        return float("inf")
-
     blanks = game.get_blank_spaces()
 
     moves = game.get_legal_moves(player)
@@ -74,12 +90,12 @@ def plane_walker(game: Board, player: Player) -> float:
     return float(board_value - opp_board_value)
 
 
-def build_map(moves, blanks):
+def build_map(moves: List[Move], blanks: List[Move]) -> List[List[int]]:
     depth = 1
     board = copy.deepcopy(EMPTY_BOARD)
     start_moves = set(moves)
     while len(start_moves) > 0:
-        new_moves = set()
+        new_moves = set()  # type: Set[Move]
         for move in start_moves:
             if move in blanks and board[move[0]][move[1]] == 0:
                 board[move[0]][move[1]] = depth
@@ -92,21 +108,74 @@ def build_map(moves, blanks):
     return board
 
 
-def possible_moves(moves):
+def possible_moves(moves: Set[Move]) -> Set[Move]:
     valid_moves = []
     for move in moves:
         if move[0] in DIMENSIONS and move[1] in DIMENSIONS:
             valid_moves.append(move)
-    return valid_moves
+    return set(valid_moves)
 
 
-def score_board_distance(distance_map):
+def score_board_distance(distance_map: List[List[int]]) -> int:
     distances = reduce(lambda x, y: x + y, distance_map)
     value = 0
     for distance in distances:
         if distance < len(SCORING_VALUES):
             value = value + SCORING_VALUES[distance]
     return value
+
+
+def build_wall(game: Board, player: Player) -> float:
+    position = game.get_player_location(player)
+    blanks = game.get_blank_spaces()
+    blank_vertical = [loc for loc in blanks
+                      if position[1] == 3]
+    blank_horizontal = [loc for loc in blanks
+                        if position[0] == 3]
+
+    vertical = len(blank_vertical)
+    horizontal = len(blank_horizontal)
+
+    if position == (3, 3):
+        return max(vertical, horizontal)
+    elif position[0] == 3:
+        return horizontal
+    elif position[1] == 3:
+        return vertical
+    else:
+        return 0
+
+
+def rush_middle(game: Board, player: Player) -> float:
+    loc = game.get_player_location(player)
+    center = (3, 3)
+    middle = {2, 3, 4}
+    if loc == center:
+        return 100
+    elif loc[0] in middle and loc[1] in middle:
+        return 50
+    else:
+        return 0
+
+
+def block_move(game: Board, player: Player) -> float:
+    loc = game.get_player_location(player)
+    opp = game.get_player_location(game.get_opponent(player))
+
+    for dir in DIRECTIONS:
+        if (loc[0] + dir[0], loc[1] + dir[1]) == opp:
+            return 1.
+
+    return 0.
+
+
+def clover_leaf(game: Board, player: Player) -> float:
+    loc = game.get_player_location(player)
+    opp = game.get_player_location(game.get_opponent(player))
+    for leaf in CLOVER:
+        if (opp[0] + leaf[0], opp[1] + leaf[1]) == loc:
+            return 1.
+    return 0.
 
 
 class CustomPlayer:
@@ -148,6 +217,7 @@ class CustomPlayer:
         self.method = method
         self.time_left = None  # type: Timer
         self.timer_threshold = timeout
+        self.average_depths = []  # type: List[int]
 
     def get_move(self, game: Board, legal_moves: List[Move],
                  time_left: Timer) -> Move:
@@ -195,7 +265,7 @@ class CustomPlayer:
             return (-1, -1)
 
         best_move = legal_moves[random.randint(0, len(legal_moves) - 1)]
-        best_score = float('-inf')
+        best_score = float("-inf")
 
         max_depth = game.width * game.height - game.move_count
 
@@ -217,11 +287,12 @@ class CustomPlayer:
                         best_score, best_move = score, move
                     current_depth = current_depth + 1
             else:
+                current_depth = self.search_depth
                 best_score, best_move = search(game, self.search_depth)
         except Timeout:
             # Handle any actions required at timeout, if necessary
-            return best_move
-
+            pass
+        self.average_depths.append(current_depth)
         return best_move
 
     def minimax(self, game: Board, depth: int,
