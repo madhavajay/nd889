@@ -15,16 +15,17 @@ Timer = Callable[[], int]
 Heuristic = Callable[[Board, Player], float]
 
 
-BOARD_SIZE = 7
-EMPTY_BOARD = [[0 for x in range(BOARD_SIZE)] for y in range(BOARD_SIZE)]
-DIRECTIONS = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
-              (1, -2),  (1, 2), (2, -1),  (2, 1)]
-DIMENSIONS = {i for i in range(BOARD_SIZE)}
-MAX_SCORING_DISTANCE = 5
-GENES = {
-    'scoring_values': [0] * 15
-}
+BOARD_VALUE = {(0, 0): 1, (0, 1): 2, (0, 2): 2, (0, 3): 2, (0, 4): 2, (0, 5): 2, (0, 6): 1, (1, 0): 2, (1, 1): 3, (1, 2): 4, (1, 3): 4, (1, 4): 4, (1, 5): 3, (1, 6): 2, (2, 0): 2, (2, 1): 4, (2, 2): 5, (2, 3): 5, (2, 4): 5, (2, 5): 4, (2, 6): 2, (3, 0): 2, (3, 1): 4, (3, 2): 5, (3, 3): 6, (3, 4): 5, (3, 5): 4, (3, 6): 2, (4, 0): 2, (4, 1): 4, (4, 2): 5, (4, 3): 5, (4, 4): 5, (4, 5): 4, (4, 6): 2, (5, 0): 2, (5, 1): 3, (5, 2): 4, (5, 3): 4, (5, 4): 4, (5, 5): 3, (5, 6): 2, (6, 0): 1, (6, 1): 2, (6, 2): 2, (6, 3): 2, (6, 4): 2, (6, 5): 2, (6, 6): 1}
+BOARD_PROXIMITY = {(0, 0): [(1, 2), (2, 1)], (0, 1): [(1, 3), (2, 0), (2, 2)], (0, 2): [(1, 0), (1, 4), (2, 1), (2, 3)], (0, 3): [(1, 1), (1, 5), (2, 2), (2, 4)], (0, 4): [(1, 2), (1, 6), (2, 3), (2, 5)], (0, 5): [(1, 3), (2, 4), (2, 6)], (0, 6): [(1, 4), (2, 5)], (1, 0): [(0, 2), (2, 2), (3, 1)], (1, 1): [(0, 3), (2, 3), (3, 0), (3, 2)], (1, 2): [(0, 0), (0, 4), (2, 0), (2, 4), (3, 1), (3, 3)], (1, 3): [(0, 1), (0, 5), (2, 1), (2, 5), (3, 2), (3, 4)], (1, 4): [(0, 2), (0, 6), (2, 2), (2, 6), (3, 3), (3, 5)], (1, 5): [(0, 3), (2, 3), (3, 4), (3, 6)], (1, 6): [(0, 4), (2, 4), (3, 5)], (2, 0): [(0, 1), (1, 2), (3, 2), (4, 1)], (2, 1): [(0, 0), (0, 2), (1, 3), (3, 3), (4, 0), (4, 2)], (2, 2): [(0, 1), (0, 3), (1, 0), (1, 4), (3, 0), (3, 4), (4, 1), (4, 3)], (2, 3): [(0, 2), (0, 4), (1, 1), (1, 5), (3, 1), (3, 5), (4, 2), (4, 4)], (2, 4): [(0, 3), (0, 5), (1, 2), (1, 6), (3, 2), (3, 6), (4, 3), (4, 5)], (2, 5): [(0, 4), (0, 6), (1, 3), (3, 3), (4, 4), (4, 6)], (2, 6): [(0, 5), (1, 4), (3, 4), (4, 5)], (3, 0): [(1, 1), (2, 2), (4, 2), (5, 1)], (3, 1): [(1, 0), (1, 2), (2, 3), (4, 3), (5, 0), (5, 2)], (3, 2): [(1, 1), (1, 3), (2, 0), (2, 4), (4, 0), (4, 4), (5, 1), (5, 3)], (3, 3): [(1, 2), (1, 4), (2, 1), (2, 5), (4, 1), (4, 5), (5, 2), (5, 4)], (3, 4): [(1, 3), (1, 5), (2, 2), (2, 6), (4, 2), (4, 6), (5, 3), (5, 5)], (3, 5): [(1, 4), (1, 6), (2, 3), (4, 3), (5, 4), (5, 6)], (3, 6): [(1, 5), (2, 4), (4, 4), (5, 5)], (4, 0): [(2, 1), (3, 2), (5, 2), (6, 1)], (4, 1): [(2, 0), (2, 2), (3, 3), (5, 3), (6, 0), (6, 2)], (4, 2): [(2, 1), (2, 3), (3, 0), (3, 4), (5, 0), (5, 4), (6, 1), (6, 3)], (4, 3): [(2, 2), (2, 4), (3, 1), (3, 5), (5, 1), (5, 5), (6, 2), (6, 4)], (4, 4): [(2, 3), (2, 5), (3, 2), (3, 6), (5, 2), (5, 6), (6, 3), (6, 5)], (4, 5): [(2, 4), (2, 6), (3, 3), (5, 3), (6, 4), (6, 6)], (4, 6): [(2, 5), (3, 4), (5, 4), (6, 5)], (5, 0): [(3, 1), (4, 2), (6, 2)], (5, 1): [(3, 0), (3, 2), (4, 3), (6, 3)], (5, 2): [(3, 1), (3, 3), (4, 0), (4, 4), (6, 0), (6, 4)], (5, 3): [(3, 2), (3, 4), (4, 1), (4, 5), (6, 1), (6, 5)], (5, 4): [(3, 3), (3, 5), (4, 2), (4, 6), (6, 2), (6, 6)], (5, 5): [(3, 4), (3, 6), (4, 3), (6, 3)], (5, 6): [(3, 5), (4, 4), (6, 4)], (6, 0): [(4, 1), (5, 2)], (6, 1): [(4, 0), (4, 2), (5, 3)], (6, 2): [(4, 1), (4, 3), (5, 0), (5, 4)], (6, 3): [(4, 2), (4, 4), (5, 1), (5, 5)], (6, 4): [(4, 3), (4, 5), (5, 2), (5, 6)], (6, 5): [(4, 4), (4, 6), (5, 3)], (6, 6): [(4, 5), (5, 4)]}
+INF = float("inf")
+NEGINF = float("-inf")
 
+GENES = {
+    'board_value': [0.] * 6,
+    'moves_diff': 1.,
+    'pos_diff': 1.,
+    'block_bonus': 1.
+}
 
 class Chromosome(NamedTuple):
     name: str
@@ -35,67 +36,33 @@ class Chromosome(NamedTuple):
     mutation_rates: dict
 
 
-def score_board_distance(distance_map, scoring_values):
-    distances = reduce(lambda x, y: x + y, distance_map)
-    value = 0
-    for distance in distances:
-        if distance < MAX_SCORING_DISTANCE:
-            if distance != 0:
-                value = value + scoring_values[distance - 1]
-    return value
-
-
-def possible_moves(moves):
-    valid_moves = []
-    for move in moves:
-        if move[0] in DIMENSIONS and move[1] in DIMENSIONS:
-            valid_moves.append(move)
-    return valid_moves
-
-
-def build_map(moves, blanks):
-    depth = 1
-    board = copy.deepcopy(EMPTY_BOARD)
-    start_moves = set(moves)
-    while len(start_moves) > 0:
-        new_moves = set()
-        for move in start_moves:
-            if move in blanks and board[move[0]][move[1]] == 0:
-                board[move[0]][move[1]] = depth
-                new_possibles = set([(move[0] + direction[0],
-                                     move[1] + direction[1])
-                                     for direction in DIRECTIONS])
-                new_moves = new_moves | new_possibles
-        start_moves = possible_moves(new_moves)
-        depth = depth + 1
-    return board
-
-
-def plane_walker(game, player, scoring_values):
-    blanks = game.get_blank_spaces()
-
-    moves = game.get_legal_moves(player)
-    distance_map = build_map(moves, blanks)
-    board_value = score_board_distance(distance_map, scoring_values)
-
-    opp_moves = game.get_legal_moves(game.get_opponent(player))
-    opp_distance_map = build_map(opp_moves, blanks)
-    opp_board_value = score_board_distance(opp_distance_map, scoring_values)
-
-    return float(board_value - opp_board_value)
-
-
 def score_chromosome(chromesome) -> Heuristic:
     def score(game: Board, player: Player) -> float:
-        if game.is_loser(player):
-            return float("-inf")
+        # get moves
+        own_moves = game.get_legal_moves(player)
 
-        if game.is_winner(player):
-            return float("inf")
+        # loser
+        if player == game.active_player and not own_moves: return NEGINF
 
-        plane_walker_score = plane_walker(game, player,
-                                          chromesome.genes['scoring_values'])
+        # get opp moves
+        opp = game.get_opponent(player)
+        opp_moves = game.get_legal_moves(opp)
 
-        return plane_walker_score
+        # winner
+        if player == game.inactive_player and not opp_moves: return INF
+
+        moves_diff = (len(own_moves) - len(opp_moves))
+        loc = game.get_player_location(player)
+        opp_loc = game.get_player_location(opp)
+        pos_value = chromesome.genes['board_value'][BOARD_VALUE[loc] - 1]
+        opp_pos_value = chromesome.genes['board_value'][BOARD_VALUE[opp_loc] - 1]
+        pos_value_diff = pos_value - opp_pos_value
+        block_bonus = 1 if opp in BOARD_PROXIMITY[loc] else 0
+
+        return float(
+            (moves_diff * chromesome.genes['moves_diff']) +
+            (pos_value_diff * chromesome.genes['pos_diff']) +
+            (block_bonus * chromesome.genes['block_bonus'])
+        )
 
     return score

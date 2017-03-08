@@ -43,13 +43,36 @@ def custom_score(game: Board, player: Player) -> float:
     float
         The heuristic value of the current game state to the specified player.
     """
-    if game.is_loser(player):
-        return float("-inf")
 
-    if game.is_winner(player):
-        return float("inf")
+    return mov_pos_block(game, player)
 
-    return plane_walker(game, player)
+
+BOARD_VALUE = {(0, 0): 1, (0, 1): 2, (0, 2): 2, (0, 3): 2, (0, 4): 2, (0, 5): 2, (0, 6): 1, (1, 0): 2, (1, 1): 3, (1, 2): 4, (1, 3): 4, (1, 4): 4, (1, 5): 3, (1, 6): 2, (2, 0): 2, (2, 1): 4, (2, 2): 5, (2, 3): 5, (2, 4): 5, (2, 5): 4, (2, 6): 2, (3, 0): 2, (3, 1): 4, (3, 2): 5, (3, 3): 6, (3, 4): 5, (3, 5): 4, (3, 6): 2, (4, 0): 2, (4, 1): 4, (4, 2): 5, (4, 3): 5, (4, 4): 5, (4, 5): 4, (4, 6): 2, (5, 0): 2, (5, 1): 3, (5, 2): 4, (5, 3): 4, (5, 4): 4, (5, 5): 3, (5, 6): 2, (6, 0): 1, (6, 1): 2, (6, 2): 2, (6, 3): 2, (6, 4): 2, (6, 5): 2, (6, 6): 1}
+BOARD_PROXIMITY = {(0, 0): [(1, 2), (2, 1)], (0, 1): [(1, 3), (2, 0), (2, 2)], (0, 2): [(1, 0), (1, 4), (2, 1), (2, 3)], (0, 3): [(1, 1), (1, 5), (2, 2), (2, 4)], (0, 4): [(1, 2), (1, 6), (2, 3), (2, 5)], (0, 5): [(1, 3), (2, 4), (2, 6)], (0, 6): [(1, 4), (2, 5)], (1, 0): [(0, 2), (2, 2), (3, 1)], (1, 1): [(0, 3), (2, 3), (3, 0), (3, 2)], (1, 2): [(0, 0), (0, 4), (2, 0), (2, 4), (3, 1), (3, 3)], (1, 3): [(0, 1), (0, 5), (2, 1), (2, 5), (3, 2), (3, 4)], (1, 4): [(0, 2), (0, 6), (2, 2), (2, 6), (3, 3), (3, 5)], (1, 5): [(0, 3), (2, 3), (3, 4), (3, 6)], (1, 6): [(0, 4), (2, 4), (3, 5)], (2, 0): [(0, 1), (1, 2), (3, 2), (4, 1)], (2, 1): [(0, 0), (0, 2), (1, 3), (3, 3), (4, 0), (4, 2)], (2, 2): [(0, 1), (0, 3), (1, 0), (1, 4), (3, 0), (3, 4), (4, 1), (4, 3)], (2, 3): [(0, 2), (0, 4), (1, 1), (1, 5), (3, 1), (3, 5), (4, 2), (4, 4)], (2, 4): [(0, 3), (0, 5), (1, 2), (1, 6), (3, 2), (3, 6), (4, 3), (4, 5)], (2, 5): [(0, 4), (0, 6), (1, 3), (3, 3), (4, 4), (4, 6)], (2, 6): [(0, 5), (1, 4), (3, 4), (4, 5)], (3, 0): [(1, 1), (2, 2), (4, 2), (5, 1)], (3, 1): [(1, 0), (1, 2), (2, 3), (4, 3), (5, 0), (5, 2)], (3, 2): [(1, 1), (1, 3), (2, 0), (2, 4), (4, 0), (4, 4), (5, 1), (5, 3)], (3, 3): [(1, 2), (1, 4), (2, 1), (2, 5), (4, 1), (4, 5), (5, 2), (5, 4)], (3, 4): [(1, 3), (1, 5), (2, 2), (2, 6), (4, 2), (4, 6), (5, 3), (5, 5)], (3, 5): [(1, 4), (1, 6), (2, 3), (4, 3), (5, 4), (5, 6)], (3, 6): [(1, 5), (2, 4), (4, 4), (5, 5)], (4, 0): [(2, 1), (3, 2), (5, 2), (6, 1)], (4, 1): [(2, 0), (2, 2), (3, 3), (5, 3), (6, 0), (6, 2)], (4, 2): [(2, 1), (2, 3), (3, 0), (3, 4), (5, 0), (5, 4), (6, 1), (6, 3)], (4, 3): [(2, 2), (2, 4), (3, 1), (3, 5), (5, 1), (5, 5), (6, 2), (6, 4)], (4, 4): [(2, 3), (2, 5), (3, 2), (3, 6), (5, 2), (5, 6), (6, 3), (6, 5)], (4, 5): [(2, 4), (2, 6), (3, 3), (5, 3), (6, 4), (6, 6)], (4, 6): [(2, 5), (3, 4), (5, 4), (6, 5)], (5, 0): [(3, 1), (4, 2), (6, 2)], (5, 1): [(3, 0), (3, 2), (4, 3), (6, 3)], (5, 2): [(3, 1), (3, 3), (4, 0), (4, 4), (6, 0), (6, 4)], (5, 3): [(3, 2), (3, 4), (4, 1), (4, 5), (6, 1), (6, 5)], (5, 4): [(3, 3), (3, 5), (4, 2), (4, 6), (6, 2), (6, 6)], (5, 5): [(3, 4), (3, 6), (4, 3), (6, 3)], (5, 6): [(3, 5), (4, 4), (6, 4)], (6, 0): [(4, 1), (5, 2)], (6, 1): [(4, 0), (4, 2), (5, 3)], (6, 2): [(4, 1), (4, 3), (5, 0), (5, 4)], (6, 3): [(4, 2), (4, 4), (5, 1), (5, 5)], (6, 4): [(4, 3), (4, 5), (5, 2), (5, 6)], (6, 5): [(4, 4), (4, 6), (5, 3)], (6, 6): [(4, 5), (5, 4)]}
+INF = float("inf")
+NEGINF = float("-inf")
+
+def mov_pos_block(game: Board, player: Player) -> float:
+    # get moves
+    own_moves = game.get_legal_moves(player)
+
+    # loser
+    if player == game.active_player and not own_moves: return NEGINF
+
+    # get opp moves
+    opp = game.get_opponent(player)
+    opp_moves = game.get_legal_moves(opp)
+
+    # winner
+    if player == game.inactive_player and not opp_moves: return INF
+
+    moves_diff = (len(own_moves) - len(opp_moves))
+    loc = game.get_player_location(player)
+    opp_loc = game.get_player_location(opp)
+    pos_value_diff = BOARD_VALUE[loc] - BOARD_VALUE[opp_loc]
+    block_bonus = 1 if opp in BOARD_PROXIMITY[loc] else 0
+
+    return float(moves_diff + pos_value_diff + block_bonus)
 
 
 EMPTY_BOARD = [[0 for x in range(7)] for y in range(7)]
@@ -58,6 +81,51 @@ DIMENSIONS = {0, 1, 2, 3, 4, 5, 6}
 DIRECTIONS = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
               (1, -2), (1, 2), (2, -1), (2, 1)]
 CLOVER = [(-1, -1), (-1, 1), (1, 1), (1, -1)]
+
+Q1 = reduce(lambda x, y: x + y, [[(x, y) for x in range(0, 3)] for y in range(0, 3)])
+Q2 = reduce(lambda x, y: x + y, [[(x, y) for x in range(0, 3)] for y in range(4, 7)])
+Q3 = reduce(lambda x, y: x + y, [[(x, y) for x in range(4, 7)] for y in range(0, 3)]) 
+Q4 = reduce(lambda x, y: x + y, [[(x, y) for x in range(4, 7)] for y in range(4, 7)]) 
+
+OUTSIDE = [{0}, {6}]
+CORNERS = [{0, 6}] + OUTSIDE
+IN_ONE = [{1}, {5}]
+IN_CORNERS = [{1, 5}] + IN_ONE
+IN_TWO = [{2}, {4}]
+
+
+# position value
+def board_rank(game: Board, player: Player) -> float:
+    values = {}
+    for x in range(7):
+        for y in range(7):
+            loc = (x, y)
+            if set(loc) in CORNERS:
+                values[loc] = 1
+            elif {loc[0]} in OUTSIDE or {loc[1]} in OUTSIDE:
+                values[loc] = 2
+            elif set(loc) in IN_CORNERS:
+                values[loc] = 3
+            elif {loc[0]} in IN_ONE or {loc[1]} in IN_ONE:
+                values[loc] = 4
+            elif {loc[0]} in IN_TWO or {loc[1]} in IN_TWO:
+                values[loc] = 5
+            else:
+                values[loc] = 6
+
+
+def board_proximity(game: Board, player: Player) -> float:
+    values = {}
+    for x in range(7):
+        for y in range(7):
+            loc = (x, y)
+            possible_moves = []
+            for direction in DIRECTIONS:
+                move = (loc[0] + direction[0], loc[1] + direction[1])
+                if move[0] in DIMENSIONS and move[1] in DIMENSIONS:
+                    possible_moves.append(move)
+            values[loc] = possible_moves
+    return values
 
 
 def ensemble(game: Board, player: Player) -> float:
@@ -176,6 +244,7 @@ def clover_leaf(game: Board, player: Player) -> float:
         if (opp[0] + leaf[0], opp[1] + leaf[1]) == loc:
             return 1.
     return 0.
+
 
 
 class CustomPlayer:

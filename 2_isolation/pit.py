@@ -52,8 +52,18 @@ def fitness(fighter) -> float:
     agent_1_wins += counts[agent_1.player]
     agent_2_wins += counts[agent_2.player]
 
-    print("\tResult: {} to {}".format(int(counts[agent_1.player]),
-                                      int(counts[agent_2.player])))
+    searches_1 = len(agent_1.player.average_depths)
+    total_depth_1 = sum(agent_1.player.average_depths)
+    avg_1 = total_depth_1 / searches_1
+
+    searches_2 = len(agent_2.player.average_depths)
+    total_depth_2 = sum(agent_2.player.average_depths)
+    avg_2 = total_depth_2 / searches_2
+
+    print("\nResults {}: {} Avg Depth: {} vs {}: {} Avg Depth: {}".format(
+        agent_1.name, int(counts[agent_1.player]), avg_1,
+        agent_2.name, int(counts[agent_2.player]), avg_2
+    ))
 
     agent_1_score = 100. * agent_1_wins / total
     return update_score(fighter, agent_1_score)
@@ -96,9 +106,13 @@ def get_random_chromosome():
             mutation = list(value)
             for i in range(len(gene)):
                 gene[i] = random_weight()
-                if key == 'scoring_values':
-                    gene[i] = 5 - i
+                if key == 'board_value':
+                    gene[i] = (i + 1) * random_weight()
                 mutation[i] = random_mutation_rate()
+        elif type(value) is float:
+            gene = random_weight()
+            mutation = random_mutation_rate()
+
         genes[key] = gene
         mutations[key] = mutation
 
