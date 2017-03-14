@@ -5,7 +5,7 @@
 import random
 import copy
 from functools import reduce
-from typing import Any, Set, Callable, Tuple, List
+from typing import Any, Set, Dict, Callable, Tuple, List
 
 from isolation import Board
 
@@ -14,6 +14,7 @@ Player = Any
 Move = Tuple[int, int]
 Timer = Callable[[], int]
 Heuristic = Callable[[Board, Player], float]
+MoveLookUp = Dict[Move, List[Move]]
 
 
 class Timeout(Exception):
@@ -44,27 +45,39 @@ def custom_score(game: Board, player: Player) -> float:
         The heuristic value of the current game state to the specified player.
     """
 
-    return mov_pos_block(game, player)
+    return moves_ratio(game, player)
 
 
+# Pre calculated Dictionary of Board position to Board value
 BOARD_VALUE = {(0, 0): 1, (0, 1): 2, (0, 2): 2, (0, 3): 2, (0, 4): 2, (0, 5): 2, (0, 6): 1, (1, 0): 2, (1, 1): 3, (1, 2): 4, (1, 3): 4, (1, 4): 4, (1, 5): 3, (1, 6): 2, (2, 0): 2, (2, 1): 4, (2, 2): 5, (2, 3): 5, (2, 4): 5, (2, 5): 4, (2, 6): 2, (3, 0): 2, (3, 1): 4, (3, 2): 5, (3, 3): 6, (3, 4): 5, (3, 5): 4, (3, 6): 2, (4, 0): 2, (4, 1): 4, (4, 2): 5, (4, 3): 5, (4, 4): 5, (4, 5): 4, (4, 6): 2, (5, 0): 2, (5, 1): 3, (5, 2): 4, (5, 3): 4, (5, 4): 4, (5, 5): 3, (5, 6): 2, (6, 0): 1, (6, 1): 2, (6, 2): 2, (6, 3): 2, (6, 4): 2, (6, 5): 2, (6, 6): 1}
+# Pre calculated Dictionary of Board position to every position 1 move away
 BOARD_PROXIMITY = {(0, 0): [(1, 2), (2, 1)], (0, 1): [(1, 3), (2, 0), (2, 2)], (0, 2): [(1, 0), (1, 4), (2, 1), (2, 3)], (0, 3): [(1, 1), (1, 5), (2, 2), (2, 4)], (0, 4): [(1, 2), (1, 6), (2, 3), (2, 5)], (0, 5): [(1, 3), (2, 4), (2, 6)], (0, 6): [(1, 4), (2, 5)], (1, 0): [(0, 2), (2, 2), (3, 1)], (1, 1): [(0, 3), (2, 3), (3, 0), (3, 2)], (1, 2): [(0, 0), (0, 4), (2, 0), (2, 4), (3, 1), (3, 3)], (1, 3): [(0, 1), (0, 5), (2, 1), (2, 5), (3, 2), (3, 4)], (1, 4): [(0, 2), (0, 6), (2, 2), (2, 6), (3, 3), (3, 5)], (1, 5): [(0, 3), (2, 3), (3, 4), (3, 6)], (1, 6): [(0, 4), (2, 4), (3, 5)], (2, 0): [(0, 1), (1, 2), (3, 2), (4, 1)], (2, 1): [(0, 0), (0, 2), (1, 3), (3, 3), (4, 0), (4, 2)], (2, 2): [(0, 1), (0, 3), (1, 0), (1, 4), (3, 0), (3, 4), (4, 1), (4, 3)], (2, 3): [(0, 2), (0, 4), (1, 1), (1, 5), (3, 1), (3, 5), (4, 2), (4, 4)], (2, 4): [(0, 3), (0, 5), (1, 2), (1, 6), (3, 2), (3, 6), (4, 3), (4, 5)], (2, 5): [(0, 4), (0, 6), (1, 3), (3, 3), (4, 4), (4, 6)], (2, 6): [(0, 5), (1, 4), (3, 4), (4, 5)], (3, 0): [(1, 1), (2, 2), (4, 2), (5, 1)], (3, 1): [(1, 0), (1, 2), (2, 3), (4, 3), (5, 0), (5, 2)], (3, 2): [(1, 1), (1, 3), (2, 0), (2, 4), (4, 0), (4, 4), (5, 1), (5, 3)], (3, 3): [(1, 2), (1, 4), (2, 1), (2, 5), (4, 1), (4, 5), (5, 2), (5, 4)], (3, 4): [(1, 3), (1, 5), (2, 2), (2, 6), (4, 2), (4, 6), (5, 3), (5, 5)], (3, 5): [(1, 4), (1, 6), (2, 3), (4, 3), (5, 4), (5, 6)], (3, 6): [(1, 5), (2, 4), (4, 4), (5, 5)], (4, 0): [(2, 1), (3, 2), (5, 2), (6, 1)], (4, 1): [(2, 0), (2, 2), (3, 3), (5, 3), (6, 0), (6, 2)], (4, 2): [(2, 1), (2, 3), (3, 0), (3, 4), (5, 0), (5, 4), (6, 1), (6, 3)], (4, 3): [(2, 2), (2, 4), (3, 1), (3, 5), (5, 1), (5, 5), (6, 2), (6, 4)], (4, 4): [(2, 3), (2, 5), (3, 2), (3, 6), (5, 2), (5, 6), (6, 3), (6, 5)], (4, 5): [(2, 4), (2, 6), (3, 3), (5, 3), (6, 4), (6, 6)], (4, 6): [(2, 5), (3, 4), (5, 4), (6, 5)], (5, 0): [(3, 1), (4, 2), (6, 2)], (5, 1): [(3, 0), (3, 2), (4, 3), (6, 3)], (5, 2): [(3, 1), (3, 3), (4, 0), (4, 4), (6, 0), (6, 4)], (5, 3): [(3, 2), (3, 4), (4, 1), (4, 5), (6, 1), (6, 5)], (5, 4): [(3, 3), (3, 5), (4, 2), (4, 6), (6, 2), (6, 6)], (5, 5): [(3, 4), (3, 6), (4, 3), (6, 3)], (5, 6): [(3, 5), (4, 4), (6, 4)], (6, 0): [(4, 1), (5, 2)], (6, 1): [(4, 0), (4, 2), (5, 3)], (6, 2): [(4, 1), (4, 3), (5, 0), (5, 4)], (6, 3): [(4, 2), (4, 4), (5, 1), (5, 5)], (6, 4): [(4, 3), (4, 5), (5, 2), (5, 6)], (6, 5): [(4, 4), (4, 6), (5, 3)], (6, 6): [(4, 5), (5, 4)]}
+
+# Infinity and negative infinity constants
 INF = float("inf")
 NEGINF = float("-inf")
 
+
 def mov_pos_block(game: Board, player: Player) -> float:
+    """
+    Get the diff of moves between users and then add the value of the diff
+    of each players board positions, finally add a bonus if the move blocks
+    the opponent
+    """
     # get moves
     own_moves = game.get_legal_moves(player)
 
     # loser
-    if player == game.active_player and not own_moves: return NEGINF
+    if player == game.active_player and not own_moves:
+        return NEGINF
 
     # get opp moves
     opp = game.get_opponent(player)
     opp_moves = game.get_legal_moves(opp)
 
     # winner
-    if player == game.inactive_player and not opp_moves: return INF
+    if player == game.inactive_player and not opp_moves:
+        return INF
 
     moves_diff = (len(own_moves) - len(opp_moves))
     loc = game.get_player_location(player)
@@ -75,27 +88,94 @@ def mov_pos_block(game: Board, player: Player) -> float:
     return float(moves_diff + pos_value_diff + block_bonus)
 
 
+def moves_ratio(game: Board, player: Player) -> float:
+    """
+    Calculate the ratio by dividing players moves and opponents moves
+    """
+    # get moves
+    own_moves = game.get_legal_moves(player)
+
+    # loser
+    if player == game.active_player and not own_moves:
+        return NEGINF
+
+    # get opp moves
+    opp = game.get_opponent(player)
+    opp_moves = game.get_legal_moves(opp)
+
+    # winner
+    if player == game.inactive_player and not opp_moves:
+        return INF
+
+    num_own_moves = len(own_moves)
+    num_opp_moves = len(opp_moves)
+    # edge case where opponents turn hasnt happened yet but they have 0 moves
+    # the game is technically over but num_opp_moves is 0 do it cant be a
+    # denominator
+    if (player == game.active_player
+       and num_own_moves > 0 and num_opp_moves == 0):
+        return INF
+
+    return float(num_own_moves / num_opp_moves)
+
+
+def quick_center(game: Board, player: Player) -> float:
+    """
+    Encourage player to move to the middle of the board with minimal compute
+    """
+    # get moves
+    own_moves = game.get_legal_moves(player)
+
+    # loser
+    if player == game.active_player and not own_moves:
+        return NEGINF
+
+    # get opp moves
+    opp = game.get_opponent(player)
+    opp_moves = game.get_legal_moves(opp)
+
+    # winner
+    if player == game.inactive_player and not opp_moves:
+        return INF
+
+    loc = game.get_player_location(player)
+    opp_loc = game.get_player_location(opp)
+    loc_dist = abs(loc[0] - 3) + abs(loc[1] - 3)
+    opp_loc_dist = abs(opp_loc[0] - 3) + abs(opp_loc[1] - 3)
+    return float(opp_loc_dist - loc_dist)
+
+
+# 2 dimensional array, [x][y] of 0s representing an empty board
 EMPTY_BOARD = [[0 for x in range(7)] for y in range(7)]
+# Array of board values indexed from 0 where 0 is none and distance of
+# 1 is worth 5 and so on
 SCORING_VALUES = [0, 5, 4, 3, 2, 1]
+# Set of board dimensions
 DIMENSIONS = {0, 1, 2, 3, 4, 5, 6}
+# Move operations for all directions from a single square
 DIRECTIONS = [(-2, -1), (-2, 1), (-1, -2), (-1, 2),
               (1, -2), (1, 2), (2, -1), (2, 1)]
+# Location operations for clover positions around a square
 CLOVER = [(-1, -1), (-1, 1), (1, 1), (1, -1)]
 
-Q1 = reduce(lambda x, y: x + y, [[(x, y) for x in range(0, 3)] for y in range(0, 3)])
-Q2 = reduce(lambda x, y: x + y, [[(x, y) for x in range(0, 3)] for y in range(4, 7)])
-Q3 = reduce(lambda x, y: x + y, [[(x, y) for x in range(4, 7)] for y in range(0, 3)]) 
-Q4 = reduce(lambda x, y: x + y, [[(x, y) for x in range(4, 7)] for y in range(4, 7)]) 
-
+# Outer rows and columns
 OUTSIDE = [{0}, {6}]
+# Outer corners
 CORNERS = [{0, 6}] + OUTSIDE
+# Rows and columns one square in
 IN_ONE = [{1}, {5}]
+# Corners one square in
 IN_CORNERS = [{1, 5}] + IN_ONE
+# Rows and Columns one square in
 IN_TWO = [{2}, {4}]
 
 
 # position value
-def board_rank(game: Board, player: Player) -> float:
+def board_rank(game: Board, player: Player) -> Dict[Move, int]:
+    """
+    Calculate a dictionary of board positions with values for each position
+    starting from the outside and working its way in one square at a time
+    """
     values = {}
     for x in range(7):
         for y in range(7):
@@ -112,9 +192,14 @@ def board_rank(game: Board, player: Player) -> float:
                 values[loc] = 5
             else:
                 values[loc] = 6
+    return values
 
 
-def board_proximity(game: Board, player: Player) -> float:
+def board_proximity(game: Board, player: Player) -> MoveLookUp:
+    """
+    Calculate a dictionary with board positions as the key and for the value
+    a list of the board positions which are 1 move away as a knight
+    """
     values = {}
     for x in range(7):
         for y in range(7):
@@ -129,6 +214,10 @@ def board_proximity(game: Board, player: Player) -> float:
 
 
 def ensemble(game: Board, player: Player) -> float:
+    """
+    Combine several different heuristics into one function
+    """
+
     plane_walker_score = plane_walker(game, player)
     build_wall_score = build_wall(game, player)
     rush_middle_score = rush_middle(game, player)
@@ -145,6 +234,11 @@ def ensemble(game: Board, player: Player) -> float:
 
 
 def plane_walker(game: Board, player: Player) -> float:
+    """
+    Calculate the number of board squares available to the player
+    and give each a value decreasing as they are more moves away from the
+    current move, then add these up and diff them between players
+    """
     blanks = game.get_blank_spaces()
 
     moves = game.get_legal_moves(player)
@@ -159,6 +253,11 @@ def plane_walker(game: Board, player: Player) -> float:
 
 
 def build_map(moves: List[Move], blanks: List[Move]) -> List[List[int]]:
+    """
+    Build a map of how many turns each square is away from the current
+    players board position, starting with an empty board and assigning
+    a number on each reachable square
+    """
     depth = 1
     board = copy.deepcopy(EMPTY_BOARD)
     start_moves = set(moves)
@@ -177,6 +276,10 @@ def build_map(moves: List[Move], blanks: List[Move]) -> List[List[int]]:
 
 
 def possible_moves(moves: Set[Move]) -> Set[Move]:
+    """
+    Reduce a set of moves down to ones which are within the proximity
+    of the board
+    """
     valid_moves = []
     for move in moves:
         if move[0] in DIMENSIONS and move[1] in DIMENSIONS:
@@ -185,6 +288,10 @@ def possible_moves(moves: Set[Move]) -> Set[Move]:
 
 
 def score_board_distance(distance_map: List[List[int]]) -> int:
+    """
+    Score the entire board based on the mappings between number of moves
+    to a square and the value of squares at that distance
+    """
     distances = reduce(lambda x, y: x + y, distance_map)
     value = 0
     for distance in distances:
@@ -194,6 +301,11 @@ def score_board_distance(distance_map: List[List[int]]) -> int:
 
 
 def build_wall(game: Board, player: Player) -> float:
+    """
+    Encourage the player to go the middle row and column of the board
+    to increase the chances of a partition in the later game
+    """
+
     position = game.get_player_location(player)
     blanks = game.get_blank_spaces()
     blank_vertical = [loc for loc in blanks
@@ -215,6 +327,10 @@ def build_wall(game: Board, player: Player) -> float:
 
 
 def rush_middle(game: Board, player: Player) -> float:
+    """
+    Encourage the player to go to the center of the board giving the middle
+    100 bonus points and the squares around the middle 50 bonus points
+    """
     loc = game.get_player_location(player)
     center = (3, 3)
     middle = {2, 3, 4}
@@ -227,6 +343,10 @@ def rush_middle(game: Board, player: Player) -> float:
 
 
 def block_move(game: Board, player: Player) -> float:
+    """
+    Encourage moves which happen to block one of the possible moves of the
+    opponent on their next turn
+    """
     loc = game.get_player_location(player)
     opp = game.get_player_location(game.get_opponent(player))
 
@@ -238,13 +358,16 @@ def block_move(game: Board, player: Player) -> float:
 
 
 def clover_leaf(game: Board, player: Player) -> float:
+    """
+    Encourage moves which happen to block one of the possible moves of the
+    opponent in two turns
+    """
     loc = game.get_player_location(player)
     opp = game.get_player_location(game.get_opponent(player))
     for leaf in CLOVER:
         if (opp[0] + leaf[0], opp[1] + leaf[1]) == loc:
             return 1.
     return 0.
-
 
 
 class CustomPlayer:
@@ -284,7 +407,7 @@ class CustomPlayer:
         self.iterative = iterative
         self.score = score_fn
         self.method = method
-        self.time_left = None  # type: Timer
+        self.time_left: Timer
         self.timer_threshold = timeout
         self.average_depths = []  # type: List[int]
 
