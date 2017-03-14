@@ -1,0 +1,39 @@
+*************************
+ Evaluating: ID_Improved
+*************************
+
+Playing Matches:
+----------
+  Match 1: ID_Improved vs   Random    	Result: 20 to 0
+  Match 2: ID_Improved vs   MM_Null   	Result: 19 to 1
+  Match 3: ID_Improved vs   MM_Open   	Result: 13 to 7
+  Match 4: ID_Improved vs MM_Improved 	Result: 14 to 6
+  Match 5: ID_Improved vs   AB_Null   	Result: 17 to 3
+  Match 6: ID_Improved vs   AB_Open   	Result: 13 to 7
+  Match 7: ID_Improved vs AB_Improved 	Result: 14 to 6
+
+
+Results:
+----------
+ID_Improved         78.57%
+ID_Improved Avg Depth: 12.24627659574468
+
+*************************
+   Evaluating: Student
+*************************
+
+Playing Matches:
+----------
+  Match 1:   Student   vs   Random    	Result: 20 to 0
+  Match 2:   Student   vs   MM_Null   	Result: 19 to 1
+  Match 3:   Student   vs   MM_Open   	Result: 15 to 5
+  Match 4:   Student   vs MM_Improved 	Result: 17 to 3
+  Match 5:   Student   vs   AB_Null   	Result: 18 to 2
+  Match 6:   Student   vs   AB_Open   	Result: 14 to 6
+  Match 7:   Student   vs AB_Improved 	Result: 15 to 5
+
+
+Results:
+----------
+Student             84.29%
+Student Avg Depth: 12.029459901800328

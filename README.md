@@ -1,13 +1,14 @@
 [![Build Status](https://travis-ci.org/madhavajay/nd889.svg?branch=master)](https://travis-ci.org/madhavajay/nd889)
 [![@madhavajay](https://img.shields.io/badge/twitter-@madhavajay-blue.svg?style=flat)](http://twitter.com/madhavajay)
 
-# Artificial Intelligence Nanodegree - nd889
+# Udacity - Artificial Intelligence Nanodegree - nd889
 
 Udacity Artificial Intelligence Nanodegree
 
 # Projects
 
 1. [Solve a Sudoku with AI](1_sudoku/README.md)
+2. [Build a Game-Playing Agent](2_isolation/README.md)
 
 ## Setup
 This code uses the following:
