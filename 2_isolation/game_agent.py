@@ -112,8 +112,8 @@ def moves_ratio(game: Board, player: Player) -> float:
     # edge case where opponents turn hasnt happened yet but they have 0 moves
     # the game is technically over but num_opp_moves is 0 do it cant be a
     # denominator
-    if (player == game.active_player
-       and num_own_moves > 0 and num_opp_moves == 0):
+    if (player == game.active_player and
+       num_own_moves > 0 and num_opp_moves == 0):
         return INF
 
     return float(num_own_moves / num_opp_moves)
