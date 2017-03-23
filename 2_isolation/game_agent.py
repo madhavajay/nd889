@@ -410,6 +410,7 @@ class CustomPlayer:
         self.time_left: Timer
         self.timer_threshold = timeout
         self.average_depths = []  # type: List[int]
+        self.name = "computer"
 
     def get_move(self, game: Board, legal_moves: List[Move],
                  time_left: Timer) -> Move:

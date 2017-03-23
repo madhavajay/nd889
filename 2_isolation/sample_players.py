@@ -3,6 +3,7 @@ own agent and example heuristic functions.
 """
 
 from random import randint
+from instructions import show_instructions
 
 
 def null_score(game, player):
@@ -173,6 +174,9 @@ class GreedyPlayer():
 class HumanPlayer():
     """Player that chooses a move according to user's input."""
 
+    def __init__(self) -> None:
+        self.name = "human"
+
     def get_move(self, game, legal_moves, time_left):
         """
         Select a move from the available legal moves based on user input at the
@@ -213,14 +217,20 @@ class HumanPlayer():
         valid_choice = False
         while not valid_choice:
             try:
-                index = int(input('Select move index:'))
+                msg = "\nIt's your turn, please enter the index corresponding to your next move position from the {} possible moves shown: ".format(len(legal_moves))
+                index = int(input(msg))
                 valid_choice = 0 <= index < len(legal_moves)
 
                 if not valid_choice:
                     print('Illegal move! Try again.')
 
-            except ValueError:
-                print('Invalid index! Try again.')
+            except ValueError as e:
+                if str(e)[-2:-1] == "q":
+                    raise SystemExit("Quitting Isolation")
+                elif str(e)[-2:-1] == "i":
+                    show_instructions()
+                else:
+                    print('Invalid index! Try again.')
 
         return legal_moves[index]
 

@@ -8,17 +8,24 @@ In addition we were asked to develop our own heuristics to attempt to beat the s
 
 ## Instructions
 
-Play against AI:
+* Switch to Python 3.6 or greater environment
+
+* Install necessary dependencies:
+```bash
+$ pip install termcolor
+```
+
+* Play against AI.
 ```bash
 $ python play.py
 ```
 
-Run tests:
+* Run tests:
 ```bash
 $ pytest
 ```
 
-Run genetic algorithm:
+* Run genetic algorithm:
 ```bash
 $ python pit.py
 ```
@@ -28,3 +35,11 @@ $ python pit.py
 1. [Heuristics Analysis](heuristic_analysis.md)
 
 2. [Research Review](research_review.md)
+
+---
+
+## Screenshot
+
+![alt tag](https://raw.githubusercontent.com/ltfschoen/nd889/master/2_isolation/screenshots/screenshot.png)
+
+---
