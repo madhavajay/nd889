@@ -2,6 +2,7 @@
 own agent and example heuristic functions.
 """
 
+import logging
 from random import randint
 from instructions import show_instructions
 
@@ -209,7 +210,9 @@ class HumanPlayer():
             terminal prompt; automatically return (-1, -1) if there are no
             legal moves
         """
+
         if not legal_moves:
+            logging.info('Human Player has no more legal moves')
             return (-1, -1)
 
         print(('\t'.join(['[%d] %s' % (i, str(move)) for i, move in enumerate(legal_moves)])))

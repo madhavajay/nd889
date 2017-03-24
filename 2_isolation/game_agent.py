@@ -4,6 +4,7 @@
 
 import random
 import copy
+import logging
 from functools import reduce
 from typing import Any, Set, Dict, Callable, Tuple, List
 
@@ -455,6 +456,7 @@ class CustomPlayer:
         # move from the game board (i.e., an opening book), or returning
         # immediately if there are no legal moves
         if not legal_moves:
+            logging.info('Computer Player has no more legal moves')
             return (-1, -1)
 
         best_move = legal_moves[random.randint(0, len(legal_moves) - 1)]
