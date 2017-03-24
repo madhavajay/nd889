@@ -407,7 +407,7 @@ class CustomPlayer:
         self.iterative = iterative
         self.score = score_fn
         self.method = method
-        self.time_left: Timer
+        self.time_left = Timer
         self.timer_threshold = timeout
         self.average_depths = []  # type: List[int]
         self.name = "computer"

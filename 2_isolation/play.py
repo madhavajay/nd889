@@ -4,19 +4,19 @@
 
 #!/usr/bin/env python
 
-import sys; assert sys.version_info >= (3,6,0)
+import sys; assert sys.version_info >= (3,0,0)
 import logging
 import logging.config
 import run
 
-def get_log_level(log_args):
+def get_log_level(log_args) -> int:
     valid_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR'] # numeric levels 10, 20, 30, 40
     proposed_level = log_args[0].split("=", 1)[1].upper()
     if not proposed_level in valid_levels:
         raise ValueError('Invalid log level: %s' % proposed_level)
     return proposed_level
 
-def main():
+def main() -> None:
     """
     Note: Manually override the lowest-severity log message level
     that the logger will handle from the command line by executing with flags:

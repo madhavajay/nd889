@@ -341,8 +341,6 @@ class Board(object):
             game_copy = self.copy()
 
             if show is True:
-#                print("\nNew state:\n{} {}".format(self.to_string(), self.__active_player__.name))
-
                 move_number = self.move_count+1
                 if self.move_count == 2:
                     print("\n\nMove 1: Initial random placement of Human Player 1 (Green) at coordinates {} completed".format(self.get_player_location(self.__player_1__)))
@@ -351,13 +349,10 @@ class Board(object):
                 else:
                     print("\nMove {}: New state after {}'s turn: \n\n{}".format(move_number, self.__inactive_player__.name, self.to_string()))
 
-
             move_start = curr_time_millis()
             time_left = lambda : time_limit - (curr_time_millis() - move_start)
             curr_move = self.active_player.get_move(game_copy, legal_player_moves, time_left)
             move_end = time_left()
-
-            # print move_end
 
             if curr_move is None:
                 curr_move = Board.NOT_MOVED

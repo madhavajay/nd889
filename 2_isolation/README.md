@@ -8,12 +8,7 @@ In addition we were asked to develop our own heuristics to attempt to beat the s
 
 ## Instructions
 
-* Switch to Python 3.6 or greater environment
-
-* Install necessary dependencies:
-```bash
-$ pip install termcolor
-```
+* Refer to [main README.md](https://github.com/madhavajay/nd889/blob/master/README.md) for environment setup
 
 * Play against AI.
 ```bash
@@ -35,11 +30,3 @@ $ python pit.py
 1. [Heuristics Analysis](heuristic_analysis.md)
 
 2. [Research Review](research_review.md)
-
----
-
-## Screenshot
-
-![alt tag](https://raw.githubusercontent.com/ltfschoen/nd889/master/2_isolation/screenshots/screenshot.png)
-
----
