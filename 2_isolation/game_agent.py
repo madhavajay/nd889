@@ -4,6 +4,7 @@
 
 import random
 import copy
+import logging
 from functools import reduce
 from typing import Any, Set, Dict, Callable, Tuple, List
 
@@ -407,9 +408,10 @@ class CustomPlayer:
         self.iterative = iterative
         self.score = score_fn
         self.method = method
-        self.time_left: Timer
+        self.time_left = Timer
         self.timer_threshold = timeout
         self.average_depths = []  # type: List[int]
+        self.name = "computer"
 
     def get_move(self, game: Board, legal_moves: List[Move],
                  time_left: Timer) -> Move:
@@ -454,6 +456,7 @@ class CustomPlayer:
         # move from the game board (i.e., an opening book), or returning
         # immediately if there are no legal moves
         if not legal_moves:
+            logging.info('Computer Player has no more legal moves')
             return (-1, -1)
 
         best_move = legal_moves[random.randint(0, len(legal_moves) - 1)]

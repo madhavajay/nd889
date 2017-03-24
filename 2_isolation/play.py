@@ -2,49 +2,50 @@
 # Author: github.com/madhavajay
 """nd889 AIND Project 2 - Build a Game-Playing Agent"""
 
-from sample_players import HumanPlayer
-from tournament import *
-from game_agent import *
+#!/usr/bin/env python
 
-MAX_TIME = 100000000
+import sys; assert sys.version_info >= (3,0,0)
+import logging
+import logging.config
+import run
 
+def get_log_level(log_args) -> int:
+    valid_levels = ['DEBUG', 'INFO', 'WARNING', 'ERROR'] # numeric levels 10, 20, 30, 40
+    proposed_level = log_args[0].split("=", 1)[1].upper()
+    if not proposed_level in valid_levels:
+        raise ValueError('Invalid log level: %s' % proposed_level)
+    return proposed_level
 
 def main() -> None:
-    AB_ARGS = {"search_depth": 5, "method": 'alphabeta', "iterative": False}
-    my_ai = CustomPlayer(score_fn=custom_score, **AB_ARGS)
-    # agent_1 = Agent(my_ai, "Student")
-    agent_1 = Agent(HumanPlayer(), "Human")
-    id_improved = CustomPlayer(score_fn=improved_score, **AB_ARGS)
-    agent_2 = Agent(id_improved, "AB_Custom")
-    agent_1_wins = 0.
-    agent_2_wins = 0.
-    total = 0.
-    num_matches = 1
+    """
+    Note: Manually override the lowest-severity log message level
+    that the logger will handle from the command line by executing with flags:
+    i.e. python main.py --log=WARNING
 
-    print("\nPlaying Matches:")
-    print("----------")
+    Sample usage:
+        logger.debug('debug message')
+        logger.info('info message')
+        logger.warning('warn message')
+        logger.error('error message')
+    """
 
-    counts = {agent_1.player: 0., agent_2.player: 0.}
-    names = [agent_1.name, agent_2.name]
-    print("  Match {}: {!s:^11} vs {!s:^11}".format(1, *names), end=' ')
+    # Load logger config
+    logging.config.fileConfig('logging.conf')
 
-    # Each player takes a turn going first
-    for _ in range(num_matches):
-        score_1, score_2 = play_match(agent_1.player, agent_2.player,
-                                      True, MAX_TIME)
-        counts[agent_1.player] += score_1
-        counts[agent_2.player] += score_2
-        total += score_1 + score_2
+    # Create logger
+    logger = logging.getLogger('isolation logger')
+    logger.setLevel('ERROR') # specifies lowest-severity log message a logger will handle
 
-    agent_1_wins += counts[agent_1.player]
-    agent_2_wins += counts[agent_2.player]
+    if len(sys.argv):
+        log_args = [arg for arg in sys.argv if '--log=' in arg]
+        if len(log_args) > 0:
+            logger.setLevel(get_log_level(log_args))
 
-    print("\tResult: {} to {}".format(int(counts[agent_1.player]),
-                                      int(counts[agent_2.player])))
-
-    agent_1_score = 100. * agent_1_wins / total
-    print('Score: {}'.format(agent_1_score))
-
+    # Get current logging level
+    numeric_level = logging.getLogger().getEffectiveLevel()
+    logging.info('Starting Isolation Game')
+    run.main()
+    logging.info('Ended Isolation Game')
 
 if __name__ == "__main__":
     main()

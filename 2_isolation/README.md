@@ -8,17 +8,19 @@ In addition we were asked to develop our own heuristics to attempt to beat the s
 
 ## Instructions
 
-Play against AI:
+* Refer to [main README.md](https://github.com/madhavajay/nd889/blob/master/README.md) for environment setup
+
+* Play against AI.
 ```bash
 $ python play.py
 ```
 
-Run tests:
+* Run tests:
 ```bash
 $ pytest
 ```
 
-Run genetic algorithm:
+* Run genetic algorithm:
 ```bash
 $ python pit.py
 ```
