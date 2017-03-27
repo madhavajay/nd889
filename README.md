@@ -9,6 +9,7 @@ Udacity Artificial Intelligence Nanodegree
 
 1. [Solve a Sudoku with AI](1_sudoku/README.md)
 2. [Build a Game-Playing Agent](2_isolation/README.md)
+3. [Lab: Teaching Pac-Man to Search](3_pacman/README.md)
 
 ---
 
