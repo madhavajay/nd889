@@ -6,11 +6,13 @@ For the AIND Project 2: Build a Game-Playing Agent, we were introduced to the ga
 
 In addition we were asked to develop our own heuristics to attempt to beat the supplied heuristics. This was more difficult than expected and illustrated the tradeoff between a heuristic complexity and speed when used for tree search.
 
+## Game UI ♞
+I made some changes to the Game UI to allow board numbering, player colors and visual display of possible moves. Thanks to [@ltfschoen](https://
+github.com/ltfschoen) for contributions. 😎
+
 ## Instructions
 
-* Refer to [main README.md](https://github.com/madhavajay/nd889/blob/master/README.md) for environment setup
-
-* Play against AI.
+* Play against AI:
 ```bash
 $ python play.py
 ```
@@ -30,3 +32,10 @@ $ python pit.py
 1. [Heuristics Analysis](heuristic_analysis.md)
 
 2. [Research Review](research_review.md)
+
+---
+
+## Screenshot
+
+![alt tag](https://raw.githubusercontent.com/ltfschoen/nd889/master/2_isolation/img/screenshots/screenshot.png)
+

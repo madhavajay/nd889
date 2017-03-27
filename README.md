@@ -13,12 +13,6 @@ Udacity Artificial Intelligence Nanodegree
 
 ---
 
-## Screenshot
-
-![alt tag](https://raw.githubusercontent.com/ltfschoen/nd889/master/2_isolation/img/screenshots/screenshot.png)
-
----
-
 ## Setup
 This code uses the following:
 - python 3.6
