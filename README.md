@@ -3,7 +3,7 @@
 
 # Udacity - Artificial Intelligence Nanodegree - nd889
 
-![AIND](img/udacity_aind.png)
+![AIND](img/udacity_AIND.png)
 
 # Projects
 
