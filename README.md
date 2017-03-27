@@ -3,13 +3,14 @@
 
 # Udacity - Artificial Intelligence Nanodegree - nd889
 
-Udacity Artificial Intelligence Nanodegree
+![AIND](img/udacity_aind.png)
 
 # Projects
 
 1. [Solve a Sudoku with AI](1_sudoku/README.md)
 2. [Build a Game-Playing Agent](2_isolation/README.md)
 3. [Lab: Teaching Pac-Man to Search](3_pacman/README.md)
+4. [Lab: Simulated Annealing](4_simulated_annealing/README.md)
 
 ---
 
