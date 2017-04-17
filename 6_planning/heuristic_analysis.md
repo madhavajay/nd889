@@ -25,8 +25,8 @@ The most optimal solution to the problem is in 6 steps:
 6. Unload(C1, P1, JFK)
 
 ### Algorithm Comparison
-For this problem Greedy Best First Graph Search (GBFGS + h1) performs the best by far, achieving the fastest speed with the lowest number of node expansions. 
-The reasoning for this is, "Greedy best-first search tries to expand the node that is closest to the goal, on the grounds that this is likely to lead to a solution quickly. Thus, it evaluates nodes by using just the heuristic function; that is, f(n) = h(n)." **[\[1\]](#user-content-references)**
+For this problem Greedy Best First Graph Search (GBFGS + h1) performs the best by far, achieving the fastest speed with the lowest number of node expansions.
+The reasoning for this is, "Greedy best-first search tries to expand the node that is closest to the goal, on the grounds that this is likely to lead to a solution quickly. Thus, it evaluates nodes by using just the heuristic function; that is, f(n) = h(n)." **[\[1\]](#user-content-references)** In this small problem GBF finds the solution easily with minimal node expansion or time.
 
 Problem | Algorithm | Nodes Expanded | Goal Tests | New Nodes | Steps | Time (s) | x Slower
 --------|-----------|----------------|------------|-----------|------------|-----|-----
@@ -71,7 +71,7 @@ The most optimal solution to the problem is in 9 steps:
 ### Algorithm Comparison
 For this problem even though GBFGS is still the fastest it doesn't find the most optimal solution. BFS is able to solve an optimal solution in only 6.5 times longer, because "if the shallowest goal node is at some finite depth d, breadth-first search will eventually find it after generating all shallower nodes (provided the branching factor b is finite)" **[\[2\]](#user-content-references)**
 
-However we can already see that the time and space complexity is becoming a problem for BFS. Turning to A\* with the ignore heuristic we can solve the problem with an optimal solution and only 4.5 times the GBFGS run time and less than half the node expansion of BFS. Even though the problem is only marginally more complex than the first, non optimal solutions can be drastically worse, so if optimal step count is important certain algorithms should be ruled out.
+However we can already see that the time and space complexity is becoming a problem for BFS. Turning to A\* with the ignore heuristic we can solve the problem with an optimal solution and only 4.5 times the GBFGS run time and less than half the node expansion of BFS. Even though the problem appears to be only marginally more complex than the first, non optimal solutions can be drastically worse for cost, so if optimal step count is important certain algorithms such as DFGS should be ruled out.
 
 BFTS, DLS, RBFS and A\* + hLevelsum did not complete in under 10 minutes.
 
@@ -121,7 +121,7 @@ The most optimal solution to the problem is in 12 steps:
 ### Algorithm Comparison
 Finally we can see here achieving an optimal result in a reasonable amount of time is best served by A\* and a fast heuristic. The ignore preconditions heuristic "drops all preconditions from actions. Every action becomes applicable in every state, and any single goal fluent can be achieved in one step" **[\[3\]](#user-content-references)**
 
-This provides a very quick estimate of the how close any given state is to the goal state, ignoring preconditions. 
+This provides a very quick estimate of the how close any given state is to the goal state, ignoring preconditions.
 
 BFTS, DLS, RBFS and A\* + hLevelsum did not complete in under 10 minutes.
 
