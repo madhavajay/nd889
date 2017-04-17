@@ -1,6 +1,6 @@
 ## Udacity - Artificial Intelligence Nanodegree - nd889
 
-# Heuristics Analysis
+# Heuristics Analysis - Air Cargo Transport Problem
 
 ### Problem 1
 The first problem has 2 pieces of cargo, 2 airports and 2 planes.
