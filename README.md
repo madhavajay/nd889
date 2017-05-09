@@ -5,12 +5,14 @@
 
 ![AIND](img/udacity_AIND.png)
 
-# Projects
+# Projects and Labs
 
 1. [Solve a Sudoku with AI](1_sudoku/README.md)
 2. [Build a Game-Playing Agent](2_isolation/README.md)
 3. [Lab: Teaching Pac-Man to Search](3_pacman/README.md)
 4. [Lab: Simulated Annealing](4_simulated_annealing/README.md)
+5. [Implement a Planning Search](6_planning/README.md)
+6. [Build a Sign Language Recognizer](7_recognizer/README.md)
 
 ---
 
