@@ -4,8 +4,10 @@ python:
 
 install:
   - pip install pipenv
+  - pipenv --three
+  - pipenv shell -c
   - pipenv install
 
 script:
-  - pipenv run pytest
-  - pipenv run mypy 1_sudoku --ignore-missing-imports
+  - pytest
+  - mypy 1_sudoku --ignore-missing-imports
