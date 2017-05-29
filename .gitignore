@@ -93,3 +93,7 @@ ENV/
 
 # Apple Attributes
 .DS_Store
+
+
+# mypy
+.mypy_cache
