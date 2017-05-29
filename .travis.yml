@@ -4,6 +4,8 @@ python:
 
 install:
   - pip install pipenv
+  - pipenv --three
+  - pipenv install git+https://github.com/hmmlearn/hmmlearn.git
   - pipenv install
 
 script:
