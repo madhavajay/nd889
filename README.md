@@ -11,8 +11,9 @@
 2. [Build a Game-Playing Agent](2_isolation/README.md)
 3. [Lab: Teaching Pac-Man to Search](3_pacman/README.md)
 4. [Lab: Simulated Annealing](4_simulated_annealing/README.md)
-5. [Implement a Planning Search](6_planning/README.md)
-6. [Build a Sign Language Recognizer](7_recognizer/README.md)
+5. [Lab: Constraint Satisfaction N-Queens](5_nqueens/README.md)
+6. [Implement a Planning Search](6_planning/README.md)
+7. [Build a Sign Language Recognizer](7_recognizer/README.md)
 
 ---
 
