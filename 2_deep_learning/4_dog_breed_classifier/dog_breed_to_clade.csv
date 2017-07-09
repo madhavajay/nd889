@@ -1,0 +1,134 @@
+Index,Name,Clade,Interpolated
+0,Affenpinscher,Schnauzer,1
+1,Afghan_hound,Mediterranean,0
+2,Airedale_terrier,Terrier,0
+3,Akita,Asian Spitz,0
+4,Alaskan_malamute,Asian Spitz,0
+5,American_eskimo_dog,Nordic Spitz,0
+6,American_foxhound,Scent Hound,0
+7,American_staffordshire_terrier,European Mastiff,0
+8,American_water_spaniel,Spaniel,1
+9,Anatolian_shepherd_dog,Mediterranean,0
+10,Australian_cattle_dog,UK Rural,0
+11,Australian_shepherd,UK Rural,0
+12,Australian_terrier,Terrier,0
+13,Basenji,Pariah dog,2
+14,Basset_hound,Scent Hound,0
+15,Beagle,Scent Hound,0
+16,Bearded_collie,UK Rural,0
+17,Beauceron,Drover,1
+18,Bedlington_terrier,Terrier,0
+19,Belgian_malinois,Continental Herder,0
+20,Belgian_sheepdog,Continental Herder,0
+21,Belgian_tervuren,Continental Herder,0
+22,Bernese_mountain_dog,Alpine,0
+23,Bichon_frise,Poodle,0
+24,Black_and_tan_coonhound,Scent Hound,1
+25,Black_russian_terrier,Drover,0
+26,Bloodhound,Scent Hound,0
+27,Bluetick_coonhound,Scent Hound,1
+28,Border_collie,UK Rural,0
+29,Border_terrier,Terrier,0
+30,Borzoi,UK Rural,0
+31,Boston_terrier,European Mastiff,0
+32,Bouvier_des_flandres,Continental Herder,0
+33,Boxer,European Mastiff,0
+34,Boykin_spaniel,Spaniel,1
+35,Briard,Continental Herder,0
+36,Brittany,Pointer Setter,0
+37,Brussels_griffon,Toy Spitz,0
+38,Bull_terrier,European Mastiff,0
+39,Bulldog,European Mastiff,0
+40,Bullmastiff,European Mastiff,0
+41,Cairn_terrier,Terrier,0
+42,Canaan_dog,Pariah dog,2
+43,Cane_corso,European Mastiff,0
+44,Cardigan_welsh_corgi,UK Rural,0
+45,Cavalier_king_charles_spaniel,Spaniel,0
+46,Chesapeake_bay_retriever,Retriever,1
+47,Chihuahua,American Toy,0
+48,Chinese_crested,American Toy,0
+49,Chinese_shar-pei,Asian Spitz,0
+50,Chow_chow,Asian Spitz,0
+51,Clumber_spaniel,Spaniel,1
+52,Cocker_spaniel,Spaniel,0
+53,Collie,UK Rural,0
+54,Curly-coated_retriever,Retriever,0
+55,Dachshund,Scent Hound,0
+56,Dalmatian,Pointer Setter,0
+57,Dandie_dinmont_terrier,Terrier,1
+58,Doberman_pinscher,Drover,0
+59,Dogue_de_bordeaux,European Mastiff,0
+60,English_cocker_spaniel,Spaniel,0
+61,English_setter,Pointer Setter,0
+62,English_springer_spaniel,Spaniel,0
+63,English_toy_spaniel,Spaniel,1
+64,Entlebucher_mountain_dog,Alpine,1
+65,Field_spaniel,Spaniel,0
+66,Finnish_spitz,Nordic Spitz,1
+67,Flat-coated_retriever,Retriever,0
+68,French_bulldog,European Mastiff,0
+69,German_pinscher,Drover,1
+70,German_shepherd_dog,New World,0
+71,German_shorthaired_pointer,Pointer Setter,0
+72,German_wirehaired_pointer,Pointer Setter,0
+73,Giant_schnauzer,Drover,0
+74,Glen_of_imaal_terrier,Terrier,0
+75,Golden_retriever,Retriever,0
+76,Gordon_setter,Pointer Setter,0
+77,Great_dane,European Mastiff,0
+78,Great_pyrenees,Mediterranean,0
+79,Greater_swiss_mountain_dog,Alpine,0
+80,Greyhound,UK Rural,0
+81,Havanese,Poodle,0
+82,Ibizan_hound,Mediterranean,0
+83,Icelandic_sheepdog,Nordic Spitz,0
+84,Irish_red_and_white_setter,Pointer Setter,1
+85,Irish_setter,Pointer Setter,0
+86,Irish_terrier,Terrier,0
+87,Irish_water_spaniel,Retriever,0
+88,Irish_wolfhound,UK Rural,0
+89,Italian_greyhound,UK Rural,0
+90,Japanese_chin,Asian Toy,0
+91,Keeshond,Nordic Spitz,0
+92,Kerry_blue_terrier,Terrier,0
+93,Komondor,Mediterranean,0
+94,Kuvasz,Mediterranean,0
+95,Labrador_retriever,Retriever,0
+96,Lakeland_terrier,Terrier,1
+97,Leonberger,Mediterranean,0
+98,Lhasa_apso,Asian Toy,0
+99,Lowchen,Terrier,1
+100,Maltese,Poodle,0
+101,Manchester_terrier,Terrier,1
+102,Mastiff,European Mastiff,0
+103,Miniature_schnauzer,Schnauzer,0
+104,Neapolitan_mastiff,European Mastiff,0
+105,Newfoundland,Retriever,0
+106,Norfolk_terrier,Terrier,0
+107,Norwegian_buhund,Nordic Spitz,1
+108,Norwegian_elkhound,Nordic Spitz,0
+109,Norwegian_lundehund,Nordic Spitz,1
+110,Norwich_terrier,Terrier,0
+111,Nova_scotia_duck_tolling_retriever,Retriever,0
+112,Old_english_sheepdog,UK Rural,0
+113,Otterhound,Scent Hound,0
+114,Papillon,Toy Spitz,0
+115,Parson_russell_terrier,Terrier,0
+116,Pekingese,Asian Toy,0
+117,Pembroke_welsh_corgi,UK Rural,0
+118,Petit_basset_griffon_vendeen,Scent Hound,0
+119,Pharaoh_hound,Mediterranean,0
+120,Plott,Scent Hound,1
+121,Pointer,Pointer Setter,1
+122,Pomeranian,Small Spitz,0
+123,Poodle,Poodle,0
+124,Portuguese_water_dog,Poodle,0
+125,Saint_bernard,Alpine,0
+126,Silky_terrier,Terrier,0
+127,Smooth_fox_terrier,Terrier,1
+128,Tibetan_mastiff,Asian Spitz,0
+129,Welsh_springer_spaniel,Spaniel,1
+130,Wirehaired_pointing_griffon,Pointer Setter,0
+131,Xoloitzcuintli,New World,0
+132,Yorkshire_terrier,Terrier,0

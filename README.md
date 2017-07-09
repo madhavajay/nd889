@@ -5,15 +5,23 @@
 
 ![AIND](img/udacity_AIND.png)
 
-# Projects and Labs
+# Foundations of AI - Term 1
+## Projects and Labs
 
-1. [Solve a Sudoku with AI](1_sudoku/README.md)
-2. [Build a Game-Playing Agent](2_isolation/README.md)
-3. [Lab: Teaching Pac-Man to Search](3_pacman/README.md)
-4. [Lab: Simulated Annealing](4_simulated_annealing/README.md)
-5. [Lab: Constraint Satisfaction N-Queens](5_nqueens/README.md)
-6. [Implement a Planning Search](6_planning/README.md)
-7. [Build a Sign Language Recognizer](7_recognizer/README.md)
+1. [Solve a Sudoku with AI](1_foundations/1_sudoku/README.md)
+2. [Build a Game-Playing Agent](1_foundations/2_isolation/README.md)
+3. [Lab: Teaching Pac-Man to Search](1_foundations/3_pacman/README.md)
+4. [Lab: Simulated Annealing](1_foundations/4_simulated_annealing/README.md)
+5. [Lab: Constraint Satisfaction N-Queens](1_foundations/5_nqueens/README.md)
+6. [Implement a Planning Search](1_foundations/6_planning/README.md)
+7. [Build a Sign Language Recognizer](1_foundations/7_recognizer/README.md)
+
+# Deep Learning and Applications - Term 2
+## Projects and Labs
+1. MNIST
+2. IMDB
+3. CIFAR-10
+4. [Dog Breed Classifier](2_deep_learning/4_dog_breed_classifier/README.md)
 
 ---
 
