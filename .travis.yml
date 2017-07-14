@@ -3,7 +3,7 @@ python:
   - 3.6
 
 install:
-  - pip install pipenv pew
+  - export PIPENV_VENV_IN_PROJECT=true; pip install pipenv pew
   - pipenv --three
   - pipenv install git+https://github.com/hmmlearn/hmmlearn.git
   - pipenv install
