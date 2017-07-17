@@ -14,4 +14,3 @@ install:
 
 script:
   - pipenv run pytest
-  - pipenv run mypy 1_foundations/1_sudoku --ignore-missing-imports
