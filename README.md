@@ -21,7 +21,8 @@
 1. MNIST
 2. IMDB
 3. CIFAR-10
-4. [Dog Breed Classifier](2_deep_learning/4_dog_breed_classifier/)
+4. [CNN Dog Breed Classifier](2_deep_learning/4_dog_breed_classifier/)
+4. [RNN Apple Stock & Sherlock Holmes](2_deep_learning/5_rnn_stock_sherlock/)
 
 ---
 
