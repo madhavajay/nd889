@@ -37,5 +37,5 @@ $ python pit.py
 
 ## Screenshot
 
-![alt tag](https://raw.githubusercontent.com/ltfschoen/nd889/master/2_isolation/img/screenshots/screenshot.png)
+![Screenshot](./img/screenshots/isolation.jpg)
 
