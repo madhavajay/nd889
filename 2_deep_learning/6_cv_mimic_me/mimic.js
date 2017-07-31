@@ -37,6 +37,12 @@ var emojis = [
   128561
 ]
 
+// Global Vars
+var targetEmoji = null
+var scoreCorrect = 0
+var scoreTotal = 0
+var timer = null
+
 // Update target emoji being displayed by supplying a unicode value
 function setTargetEmoji(code) {
   $('#target').html('&#' + code + ';')
@@ -58,6 +64,17 @@ function setScore(correct, total) {
 // Display log messages and tracking results
 function log(node_name, msg) {
   $(node_name).append('<span>' + msg + '</span><br />')
+}
+
+// Pick a random emoji and update score
+function randomEmoji() {
+  var emojiIndex = Math.floor(Math.random() * emojis.length)
+  var emoji = emojis[emojiIndex]
+  targetEmoji = emoji
+  setTargetEmoji(emoji)
+  scoreTotal += 1
+  setScore(scoreCorrect, scoreTotal)
+  resetTimer()
 }
 
 // --- Callback functions ---
@@ -89,8 +106,7 @@ function onReset() {
   $('#results').html('') // clear out results
   $('#logs').html('') // clear out previous log
 
-  // TODO(optional): You can restart the game as well
-  // <your code here>
+  resetGame()
 }
 
 // Add a callback to notify when camera access is allowed
@@ -160,7 +176,7 @@ detector.addEventListener('onImageResultsSuccess', function(
     drawEmoji(canvas, image, faces[0])
 
     // TODO: Call your function to run the game (define it first!)
-    // <your code here>
+    playGame(canvas, image, faces[0])
   }
 })
 
@@ -219,4 +235,31 @@ function drawEmoji(canvas, img, face) {
 // - Define an initialization/reset function, and call it from the "onInitializeSuccess" event handler above
 // - Define a game reset function (same as init?), and call it from the onReset() function above
 
-// <your code here>
+function playGame(canvas, image, face) {
+  if (targetEmoji == null) {
+    resetGame()
+  }
+
+  var emoji = toUnicode(face.emojis.dominantEmoji)
+
+  if (emoji == targetEmoji) {
+    // increment score
+    scoreCorrect += 1
+
+    // reset the timer and the emoji
+    randomEmoji()
+  }
+}
+
+function resetGame() {
+  randomEmoji()
+  scoreCorrect = 0
+  scoreTotal = 0
+  setScore(scoreCorrect, scoreTotal)
+}
+
+function resetTimer() {
+  clearTimeout(timer)
+  timer = null
+  timer = setTimeout(randomEmoji, 6000)
+}
