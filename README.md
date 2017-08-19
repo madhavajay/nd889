@@ -60,7 +60,29 @@ Install project dependancies:
 $ pipenv install
 ```
 
+OpenCV 3:  
+OpenCV 3 needs to be compiled with a bunch of extra stuff to access things like the webcam. If you want to skip this stuff you can simply run:
+```bash
+$ pipenv install opencv-python
+```
+
+Install Full Compiled OpenCV 3:
+```bash
+$ brew install opencv3 --with-contrib --with-python3 --without-python
+```
+
+Link OpenCV 3 to system site-packages:
+```bash
+$ echo /usr/local/opt/opencv3/lib/python3.6/site-packages >> /usr/local/lib/python3.6/site-packages/opencv3.pth
+```
+
+Link OpenCV to pipenv virtualenv:
+```
+$ ln -s /usr/local/opt/opencv3/lib/python3.6/site-packages/cv2.cpython-36m-darwin.so ~/.local/share/virtualenvs/nd889/lib/python3.6/cv2.so
+```
+
+## Tests
 Run tests:
 ```bash
-$ pytest
+(nd889) $ pytest
 ```
