@@ -76,6 +76,11 @@ Link OpenCV 3 to system site-packages:
 $ echo /usr/local/opt/opencv3/lib/python3.6/site-packages >> /usr/local/lib/python3.6/site-packages/opencv3.pth
 ```
 
+Check the virtualenv path:
+```
+(nd889) $ pipenv --venv
+```
+
 Link OpenCV to pipenv virtualenv:
 ```
 $ ln -s /usr/local/opt/opencv3/lib/python3.6/site-packages/cv2.cpython-36m-darwin.so ~/.local/share/virtualenvs/nd889/lib/python3.6/cv2.so
