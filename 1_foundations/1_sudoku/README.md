@@ -12,6 +12,8 @@ In addition in diagonal sudoku both 9 long diagonals of the square, form an addi
 
 Sudoku squares also come with some values prefilled as additional constraints which provide a starting point for solving the puzzle.
 
+![Naked Twins](./images/naked-twins.png)
+
 # Question 1 (Naked Twins)
 Q: How do we use constraint propagation to solve the naked twins problem?
 

@@ -18,12 +18,10 @@
 
 # Deep Learning and Applications - Term 2
 ## Projects and Labs
-1. MNIST
-2. IMDB
-3. CIFAR-10
-4. [CNN Dog Breed Classifier](2_deep_learning/4_dog_breed_classifier/)
-5. [RNN Apple Stock & Sherlock Holmes](2_deep_learning/5_rnn_stock_sherlock/)
-6. [Lab: Affectiva SDK - Mimic Me!](2_deep_learning/6_cv_mimic_me/)
+1. [CNN: Dog Breed Classifier](2_deep_learning/1_dog_breed_classifier/)
+2. [RNN: Apple Stock & Sherlock Holmes](2_deep_learning/2_rnn_stock_sherlock/)
+3. [Lab: Affectiva SDK - Mimic Me!](2_deep_learning/3_cv_mimic_me/)
+4. [CNN: Facial Keypoint Detection](2_deep_learning/4_facial_keypoints/)
 
 ---
 
