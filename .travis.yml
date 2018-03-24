@@ -11,6 +11,7 @@ install:
   - pip install pipenv
   - pipenv --three
   - pipenv install
+  - pipenv run pip3 install arpa
 
 script:
   - pipenv run pytest
